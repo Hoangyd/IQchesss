@@ -1,7 +1,7 @@
-#include "include/SDL2/SDL.h"
+#include "../include/SDL2/SDL.h"
 #include <stdio.h>
 #include <algorithm> // Thêm thư viện để sử dụng std::max và std::min
-#include "logicgame.h" // Include tệp header logicgame.h
+#include "../logicgame.h" // Include tệp header logicgame.h
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;
@@ -42,7 +42,7 @@ void veBanCoVaXe() {
     }
 
     // Vẽ 2 con xe màu đỏ
-    SDL_SetRenderDrawColor(gRenderer, 000, 000, 100, 255); // Set màu là màu đỏ
+    SDL_SetRenderDrawColor(gRenderer, 100, 100, 100, 255); // Set màu là màu đỏ
     SDL_Rect rook1 = { rook1X, rook1Y, SQUARE_SIZE, SQUARE_SIZE };
     SDL_Rect rook2 = { rook2X, rook2Y, SQUARE_SIZE, SQUARE_SIZE };
     SDL_RenderFillRect(gRenderer, &rook1);
