@@ -1,4 +1,5 @@
 #include "../include/SDL2/SDL.h"
+#include "../include/SDL2/SDL_image.h"
 #include <iostream>
 #include <cmath>
 
@@ -15,6 +16,28 @@ int rook2X = 7;
 int rook2Y = 0;
 
 int selectedRook = -1; // -1: No rook selected, 0: Rook 1 selected, 1: Rook 2 selected
+
+SDL_Texture* rook1Texture = nullptr;
+SDL_Texture* rook2Texture = nullptr;
+
+SDL_Texture* loadTexture(const std::string& path) {
+    SDL_Surface* surface = IMG_Load(path.c_str());
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(gRenderer, surface);
+
+    // Xác định màu nền cần xóa (trắng)
+    Uint32 white = SDL_MapRGB(surface->format, 255, 255, 255);
+    
+    // Áp dụng màu nền cần xóa cho texture
+    SDL_SetColorKey(surface, SDL_TRUE, white);
+
+    SDL_FreeSurface(surface);
+    return texture;
+}
+
+void drawTexture(SDL_Texture* texture, int x, int y) {
+    SDL_Rect destRect = { x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
+    SDL_RenderCopy(gRenderer, texture, NULL, &destRect);
+}
 
 void drawBoard() {
     for (int y = 0; y < 8; ++y) {
@@ -39,23 +62,13 @@ void drawBoard() {
     }
 }
 
-void drawRook(int x, int y, SDL_Color color) {
-    SDL_SetRenderDrawColor(gRenderer, color.r, color.g, color.b, 255);
-    SDL_Rect rect;
-    rect.x = x * SQUARE_SIZE + SQUARE_SIZE / 4;
-    rect.y = y * SQUARE_SIZE + SQUARE_SIZE / 4;
-    rect.w = SQUARE_SIZE / 2;
-    rect.h = SQUARE_SIZE / 2;
-    SDL_RenderFillRect(gRenderer, &rect);
-}
-
 void render() {
     SDL_SetRenderDrawColor(gRenderer, 151, 201, 166, 255);
     SDL_RenderClear(gRenderer);
     drawBoard();
     
-    drawRook(rook1X, rook1Y, {255, 0, 0}); // Red rook
-    drawRook(rook2X, rook2Y, {0, 255, 0}); // Green rook
+    drawTexture(rook1Texture, rook1X, rook1Y);
+    drawTexture(rook2Texture, rook2X, rook2Y);
 
     SDL_RenderPresent(gRenderer);
 }
@@ -77,6 +90,9 @@ int main(int argc, char* args[]) {
         std::cerr << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
         return 1;
     }
+
+    rook1Texture = loadTexture("D:\\IQchess\\image\\conco-fotor-202403121127.png");
+    rook2Texture = loadTexture("D:\\IQchess\\image\\conco-fotor-202403121127.png");
 
     bool quit = false;
     SDL_Event e;
