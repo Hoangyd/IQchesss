@@ -1,73 +1,64 @@
-#include "../include/SDL2/SDL.h"
-#include <stdio.h>
-#include <algorithm> // Thêm thư viện để sử dụng std::max và std::min
-#include "../logicgame.h" // Include tệp header logicgame.h
+#include "include\SDL2\SDL.h"
+#include <iostream>
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 640;
-const int BOARD_SIZE = 8;
-const int SQUARE_SIZE = SCREEN_WIDTH / BOARD_SIZE;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 800;
+const int SQUARE_SIZE = 100;
 
-SDL_Window* gWindow = NULL;
-SDL_Renderer* gRenderer = NULL;
+SDL_Window* gWindow = nullptr;
+SDL_Renderer* gRenderer = nullptr;
 
 int rook1X = 0;
 int rook1Y = 0;
-int rook2X = 560;
+int rook2X = 7;
 int rook2Y = 0;
 
-bool isDraggingRook1 = false;
-bool isDraggingRook2 = false;
+void drawBoard() {
+    SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+    SDL_Rect rect;
+    rect.w = SQUARE_SIZE;
+    rect.h = SQUARE_SIZE;
 
-void veBanCoVaXe() {
-    SDL_SetRenderDrawColor(gRenderer, 400, 255, 255, 255); // Set màu nền là màu trắng
-    SDL_RenderClear(gRenderer);
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            rect.x = x * SQUARE_SIZE;
+            rect.y = y * SQUARE_SIZE;
 
-    // Vẽ bàn cờ với các ô đen và trắng
-    bool isWhiteSquare = true;
-
-    for (int y = 0; y < BOARD_SIZE; y++) {
-        for (int x = 0; x < BOARD_SIZE; x++) {
-            SDL_Rect square = { x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
-            if (isWhiteSquare) {
-                SDL_SetRenderDrawColor(gRenderer, 200, 206, 158, 255); // Màu sáng cho ô trắng
+            if ((x + y) % 2 == 0) {
+                SDL_SetRenderDrawColor(gRenderer, 255, 206, 158, 255); // Light square color
+            } else {
+                SDL_SetRenderDrawColor(gRenderer, 209, 139, 71, 255); // Dark square color
             }
-            else {
-                SDL_SetRenderDrawColor(gRenderer, 300, 139, 71, 255); // Màu tối cho ô đen
-            }
-            SDL_RenderFillRect(gRenderer, &square);
-            isWhiteSquare = !isWhiteSquare;
+            SDL_RenderFillRect(gRenderer, &rect);
         }
-        isWhiteSquare = !isWhiteSquare;
     }
+}
 
-    // Vẽ 2 con xe màu đỏ
-    SDL_SetRenderDrawColor(gRenderer, 100, 100, 100, 255); // Set màu là màu đỏ
-    SDL_Rect rook1 = { rook1X, rook1Y, SQUARE_SIZE, SQUARE_SIZE };
-    SDL_Rect rook2 = { rook2X, rook2Y, SQUARE_SIZE, SQUARE_SIZE };
-    SDL_RenderFillRect(gRenderer, &rook1);
-    SDL_RenderFillRect(gRenderer, &rook2);
+void drawPiece(int x, int y, SDL_Color color) {
+    SDL_SetRenderDrawColor(gRenderer, color.r, color.g, color.b, 255);
+    SDL_Rect rect;
+    rect.x = x * SQUARE_SIZE + SQUARE_SIZE / 4;
+    rect.y = y * SQUARE_SIZE + SQUARE_SIZE / 4;
+    rect.w = SQUARE_SIZE / 2;
+    rect.h = SQUARE_SIZE / 2;
+    SDL_RenderFillRect(gRenderer, &rect);
+}
+
+void render() {
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+    SDL_RenderClear(gRenderer);
+    drawBoard();
+    
+    drawPiece(rook1X, rook1Y, {0, 0, 255}); // blue rook
+    drawPiece(rook2X, rook2Y, {0, 0, 255}); // blue rook
 
     SDL_RenderPresent(gRenderer);
 }
 
 int main(int argc, char* args[]) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-        return -1;
-    }
-
-    gWindow = SDL_CreateWindow("Chessboard with SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (gWindow == NULL) {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-        return -1;
-    }
-
+    SDL_Init(SDL_INIT_VIDEO);
+    gWindow = SDL_CreateWindow("Chess Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-    if (gRenderer == NULL) {
-        printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
-        return -1;
-    }
 
     bool quit = false;
     SDL_Event e;
@@ -76,51 +67,28 @@ int main(int argc, char* args[]) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
-            }
-            else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                int mouseX, mouseY;
-                SDL_GetMouseState(&mouseX, &mouseY);
+            } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                int col = x / SQUARE_SIZE;
+                int row = y / SQUARE_SIZE;
 
-                if (mouseX >= rook1X && mouseX < rook1X + SQUARE_SIZE && mouseY >= rook1Y && mouseY < rook1Y + SQUARE_SIZE) {
-                    isDraggingRook1 = true;
-                }
-                else if (mouseX >= rook2X && mouseX < rook2X + SQUARE_SIZE && mouseY >= rook2Y && mouseY < rook2Y + SQUARE_SIZE) {
-                    isDraggingRook2 = true;
-                }
-            }
-            else if (e.type == SDL_MOUSEBUTTONUP) {
-                isDraggingRook1 = false;
-                isDraggingRook2 = false;
-            }
-            else if (e.type == SDL_MOUSEMOTION) {
-                if (isDraggingRook1) {
-                    rook1X = e.motion.x - SQUARE_SIZE / 2;
-                    rook1Y = e.motion.y - SQUARE_SIZE / 2;
-
-                    // Đảm bảo rằng quân xe 1 nằm trọn trong ô mới
-                    rook1X = std::max(0, std::min(rook1X, SCREEN_WIDTH - SQUARE_SIZE));
-                    rook1Y = std::max(0, std::min(rook1Y, SCREEN_HEIGHT - SQUARE_SIZE));
-                }
-                else if (isDraggingRook2) {
-                    rook2X = e.motion.x - SQUARE_SIZE / 2;
-                    rook2Y = e.motion.y - SQUARE_SIZE / 2;
-
-                    // Đảm bảo rằng quân xe 2 nằm trọn trong ô mới
-                    rook2X = std::max(0, std::min(rook2X, SCREEN_WIDTH - SQUARE_SIZE));
-                    rook2Y = std::max(0, std::min(rook2Y, SCREEN_HEIGHT - SQUARE_SIZE));
+                if ((col == rook1X && row == rook1Y) || (col == rook2X && row == rook2Y)) {
+                    if (col == rook1X && row == rook1Y) {
+                        rook1X = col;
+                        rook1Y = row;
+                    } else if (col == rook2X && row == rook2Y) {
+                        rook2X = col;
+                        rook2Y = row;
+                    }
                 }
             }
-
-            veBanCoVaXe(); // Gọi hàm vẽ bàn cờ và các con xe
         }
+        render();
     }
 
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
-    gWindow = NULL;
-    gRenderer = NULL;
-
     SDL_Quit();
-
     return 0;
 }
