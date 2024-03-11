@@ -1,5 +1,6 @@
 #include "../include/SDL2/SDL.h"
 #include <iostream>
+#include <cmath>
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
@@ -16,22 +17,24 @@ int rook2Y = 0;
 int selectedRook = -1; // -1: No rook selected, 0: Rook 1 selected, 1: Rook 2 selected
 
 void drawBoard() {
-    SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-    SDL_Rect rect;
-    rect.w = SQUARE_SIZE;
-    rect.h = SQUARE_SIZE;
-
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
-            rect.x = x * SQUARE_SIZE;
-            rect.y = y * SQUARE_SIZE;
+            int centerX = x * SQUARE_SIZE + SQUARE_SIZE / 2;
+            int centerY = y * SQUARE_SIZE + SQUARE_SIZE / 2;
+            int radius = SQUARE_SIZE / 2;
 
             if ((x + y) % 2 == 0) {
-                SDL_SetRenderDrawColor(gRenderer, 50, 0, 0, 255); // Light square color
+                SDL_SetRenderDrawColor(gRenderer, 50, 100, 100, 255); // Light square color
             } else {
-                SDL_SetRenderDrawColor(gRenderer, 200, 200, 150, 255); // Dark square color
+                SDL_SetRenderDrawColor(gRenderer, 100, 20, 150, 255); // Dark square color
             }
-            SDL_RenderFillRect(gRenderer, &rect);
+
+            for (int i = 0; i < 360; ++i) {
+                float angle = i * M_PI / 180;
+                int circleX = centerX + radius * cos(angle);
+                int circleY = centerY + radius * sin(angle);
+                SDL_RenderDrawPoint(gRenderer, circleX, circleY);
+            }
         }
     }
 }
@@ -47,7 +50,7 @@ void drawRook(int x, int y, SDL_Color color) {
 }
 
 void render() {
-    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(gRenderer, 151, 201, 166, 255);
     SDL_RenderClear(gRenderer);
     drawBoard();
     
@@ -88,43 +91,20 @@ int main(int argc, char* args[]) {
                 int col = x / SQUARE_SIZE;
                 int row = y / SQUARE_SIZE;
 
-                if (col == rook1X && row == rook1Y) {
-                    selectedRook = 0; // Select Rook 1
-                } else if (col == rook2X && row == rook2Y) {
-                    selectedRook = 1; // Select Rook 2
+                if (selectedRook == 0) {
+                    rook1X = col;
+                    rook1Y = row;
+                    selectedRook = -1; // Deselect the rook after moving
+                } else if (selectedRook == 1) {
+                    rook2X = col;
+                    rook2Y = row;
+                    selectedRook = -1; // Deselect the rook after moving
                 } else {
-                    selectedRook = -1; // Deselect both rooks
-                }
-            } else if (e.type == SDL_KEYDOWN && selectedRook != -1) {
-                switch (e.key.keysym.sym) {
-                    case SDLK_UP:
-                        if (selectedRook == 0) {
-                            if (rook1Y > 0) rook1Y--;
-                        } else if (selectedRook == 1) {
-                            if (rook2Y > 0) rook2Y--;
-                        }
-                        break;
-                    case SDLK_DOWN:
-                        if (selectedRook == 0) {
-                            if (rook1Y < 7) rook1Y++;
-                        } else if (selectedRook == 1) {
-                            if (rook2Y < 7) rook2Y++;
-                        }
-                        break;
-                    case SDLK_LEFT:
-                        if (selectedRook == 0) {
-                            if (rook1X > 0) rook1X--;
-                        } else if (selectedRook == 1) {
-                            if (rook2X > 0) rook2X--;
-                        }
-                        break;
-                    case SDLK_RIGHT:
-                        if (selectedRook == 0) {
-                            if (rook1X < 7) rook1X++;
-                        } else if (selectedRook == 1) {
-                            if (rook2X < 7) rook2X++;
-                        }
-                        break;
+                    if (col == rook1X && row == rook1Y) {
+                        selectedRook = 0; // Select Rook 1
+                    } else if (col == rook2X && row == rook2Y) {
+                        selectedRook = 1; // Select Rook 2
+                    }
                 }
             }
 
