@@ -25,9 +25,9 @@ void drawBoard() {
             rect.y = y * SQUARE_SIZE;
 
             if ((x + y) % 2 == 0) {
-                SDL_SetRenderDrawColor(gRenderer, 100, 100, 158, 255); // Light square color
+                SDL_SetRenderDrawColor(gRenderer, 50, 0, 0, 255); // Light square color
             } else {
-                SDL_SetRenderDrawColor(gRenderer, 209, 239, 71, 255); // Dark square color
+                SDL_SetRenderDrawColor(gRenderer, 200, 200, 150, 255); // Dark square color
             }
             SDL_RenderFillRect(gRenderer, &rect);
         }
