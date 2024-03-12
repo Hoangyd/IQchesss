@@ -1,4 +1,4 @@
-#include "mapco.h"
+ #include "mapco.h"
 #include "../include/SDL2/SDL.h"
 #include "../include/SDL2/SDL_image.h"
 int main(int argc, char* args[]) {
@@ -7,7 +7,7 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
-    gWindow = SDL_CreateWindow("Bàn Cờ Cờ Vua", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    gWindow = SDL_CreateWindow("IQCHESS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (gWindow == nullptr) {
         std::cerr << "Không thể tạo cửa sổ! Lỗi SDL: " << SDL_GetError() << std::endl;
         return 1;
@@ -19,8 +19,8 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
-    rook1Texture = loadTexture("D:\\IQchess\\image\\conco-fotor-202403121127.png");
-    rook2Texture = loadTexture("D:\\IQchess\\image\\conco-fotor-202403121127.png");
+    rook1Texture = loadTexture("image/conco-fotor-202403121127(1).png");
+    rook2Texture = loadTexture("image/conco-fotor-202403121127(1).png");
 
     bool quit = false;
     SDL_Event e;

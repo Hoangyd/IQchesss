@@ -22,6 +22,7 @@ extern int selectedRook;
 
 extern SDL_Texture* rook1Texture;
 extern SDL_Texture* rook2Texture;
+extern SDL_Texture* backgroundTexture;
 
 SDL_Texture* loadTexture(const std::string& path);
 void drawTexture(SDL_Texture* texture, int x, int y);
