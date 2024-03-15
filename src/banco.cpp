@@ -1,17 +1,14 @@
 
-#include "mapco.h"
+#include "banco.h"
+
 const int SCREEN_WIDTH = 700;
 const int SCREEN_HEIGHT = 700;
 const int SQUARE_SIZE = 100;
 SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
-SDL_Texture* rook1Texture = nullptr;
-SDL_Texture* rook2Texture = nullptr;
-int rook1X = 2;
-int rook1Y = 0;
-int rook2X = 4;
-int rook2Y = 0;
-int selectedRook = -1;
+SDL_Texture* banco = nullptr;
+SDL_Texture* quanco = nullptr;
+
 SDL_Texture* loadTexture(const std::string& path) {
     SDL_Surface* surface = IMG_Load(path.c_str());
     if (!surface) {
@@ -25,6 +22,7 @@ SDL_Texture* loadTexture(const std::string& path) {
     SDL_FreeSurface(surface);
     return texture;
 }
+
 void drawTexture(SDL_Texture* texture, int x, int y) {
     int newWidth = SQUARE_SIZE * 4/ 5; // Kích thước mới cho quân cờ (5/6 so với SQUARE_SIZE)
     int newHeight = SQUARE_SIZE * 4/ 5;
@@ -75,21 +73,5 @@ void drawBoard() {
         }
         return true; // Ô có thể di chuyển tới
     }
-void render() {
-  //  SDL_SetRenderDrawColor(gRenderer, 240, 167, 66, 225);
-    //SDL_RenderClear(gRenderer);
-    // Tải và vẽ background
-    SDL_Texture* backgroundTexture = loadTexture("image/bancogo.jpg");
-    if (backgroundTexture) {
-        SDL_Rect destRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }; // Vị trí và kích thước để phủ lên toàn bộ cửa sổ
-        SDL_RenderCopy(gRenderer, backgroundTexture, NULL, &destRect);
-        SDL_DestroyTexture(backgroundTexture); // Giải phóng texture sau khi sử dụng
-    }
-    drawBoard();
-    
-    drawTexture(rook1Texture, rook1X, rook1Y);
-    drawTexture(rook2Texture, rook2X, rook2Y);
-    SDL_RenderPresent(gRenderer);
-}
 
 

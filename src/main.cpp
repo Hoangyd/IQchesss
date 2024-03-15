@@ -1,7 +1,8 @@
-#include "mapco.h"
+#include "banco.h"
 #include "../include/SDL2/SDL.h"
 #include "../include/SDL2/SDL_image.h"
 #include <iostream>
+
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL không thể khởi tạo! Lỗi SDL: " << SDL_GetError() << std::endl;
@@ -17,8 +18,7 @@ int main(int argc, char* args[]) {
         std::cerr << "Không thể tạo renderer! Lỗi SDL: " << SDL_GetError() << std::endl;
         return 1;
     }
-    rook1Texture = loadTexture("image/conco-fotor-202403121127(1).png");
-    rook2Texture = loadTexture("image/conco-fotor-202403121127(1).png");
+
     bool quit = false;
     SDL_Event e;
     
@@ -31,25 +31,6 @@ int main(int argc, char* args[]) {
                 SDL_GetMouseState(&x, &y);
                 int col = x / SQUARE_SIZE;
                 int row = y / SQUARE_SIZE;
-                // Kiểm tra xem ô được chọn có thể di chuyển hay không
-                if (isValidMove(col, row)) {
-                    if (selectedRook == 0) {
-                        rook1X = col;
-                        rook1Y = row;
-                        selectedRook = -1; // Bỏ chọn quân xe sau khi di chuyển
-                    } else if (selectedRook == 1) {
-                        rook2X = col;
-                        rook2Y = row;
-                        selectedRook = -1; // Bỏ chọn quân xe sau khi di chuyển
-                    } else {
-                        if (col == rook1X && row == rook1Y) {
-                            selectedRook = 0; // Chọn Quân xe 1
-                        } else if (col == rook2X && row == rook2Y) {
-                            selectedRook = 1; // Chọn Quân xe 2
-                        }
-                    }
-                }
-               render();
             }
         }
     }
