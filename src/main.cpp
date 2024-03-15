@@ -19,6 +19,9 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
+    banco = loadTexture("image/banco.png");
+    quanco[0] = loadTexture("image/quanco.png");
+
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
             if (board[i][j]!=1){
@@ -38,9 +41,9 @@ int main(int argc, char* args[]) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
-            // else if (e.type == SDL_MOUSEBUTTONDOWN) {
-            //     int x, y;
-            //     SDL_GetMouseState(&x, &y);
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            std::cout << x << ' ' << y << std::endl;
             //     int col = x / SQUARE_SIZE;
             //     int row = y / SQUARE_SIZE;
             // }
