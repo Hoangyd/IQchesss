@@ -19,6 +19,17 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
+    for (int i=0;i<7;i++){
+        for (int j=0;j<7;j++){
+            if (board[i][j]!=1){
+                cs[i][j] = nullptr;
+            }
+            else{
+                cs[i][j] = new chess();
+            }
+        }
+    }
+
     bool quit = false;
     SDL_Event e;
     
@@ -26,15 +37,29 @@ int main(int argc, char* args[]) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
-            } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                int col = x / SQUARE_SIZE;
-                int row = y / SQUARE_SIZE;
+            }
+            // else if (e.type == SDL_MOUSEBUTTONDOWN) {
+            //     int x, y;
+            //     SDL_GetMouseState(&x, &y);
+            //     int col = x / SQUARE_SIZE;
+            //     int row = y / SQUARE_SIZE;
+            // }
+        }
+        drawBoard();
+        drawChess();
+        SDL_RenderPresent(gRenderer);
+    }
+   
+    
+    for (int i=0;i<7;i++){
+        for (int j=0;j<7;j++){
+            if (board[i][j]==1){
+                delete cs[i][j];
+                cs[i][j] = nullptr;
             }
         }
     }
-   
+
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
     gWindow = nullptr;

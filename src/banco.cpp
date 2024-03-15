@@ -7,7 +7,19 @@ const int SQUARE_SIZE = 100;
 SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 SDL_Texture* banco = nullptr;
-SDL_Texture* quanco = nullptr;
+SDL_Texture* quanco[3] = {nullptr, nullptr, nullptr};
+
+int board[7][7] = {
+    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    { 1,  1, 1, 1, 1,  1,  1},
+    { 1,  1, 1, 0, 1,  1,  1},
+    { 1,  1, 1, 1, 1,  1,  1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
+};
+
+chess * cs[7][7];
 
 SDL_Texture* loadTexture(const std::string& path) {
     SDL_Surface* surface = IMG_Load(path.c_str());
@@ -23,11 +35,21 @@ SDL_Texture* loadTexture(const std::string& path) {
     return texture;
 }
 
-void drawTexture(SDL_Texture* texture, int x, int y) {
-    int newWidth = SQUARE_SIZE * 4/ 5; // Kích thước mới cho quân cờ (5/6 so với SQUARE_SIZE)
-    int newHeight = SQUARE_SIZE * 4/ 5;
-    SDL_Rect destRect = { x * SQUARE_SIZE + (SQUARE_SIZE - newWidth) / 2, y * SQUARE_SIZE + (SQUARE_SIZE - newHeight) / 2, newWidth, newHeight };
-    SDL_RenderCopy(gRenderer, texture, NULL, &destRect);
+void drawChess() {
+    for (int i=0;i<7;i++){
+        for (int j=0;j<7;j++){
+            if (board[i][j]!=1){
+                continue;
+            }
+            SDL_Rect dest;
+            dest.x = j * SQUARE_SIZE + 5;
+            dest.y = i * SQUARE_SIZE + 5;
+            dest.w = dest.h = SQUARE_SIZE - 10;
+            SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+            SDL_RenderFillRect(gRenderer, &dest);
+            // SDL_RenderCopy(gRenderer, cs[i][j]->texture, NULL, &dest);
+        }
+    }
 }
 
 void drawBoard() {
