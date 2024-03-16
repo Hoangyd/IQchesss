@@ -40,6 +40,7 @@ int main(int argc, char* args[]) {
     
     int current_x = -1;
     int current_y = -1;
+    bool press = false;
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -49,18 +50,21 @@ int main(int argc, char* args[]) {
             SDL_GetMouseState(&x, &y);
             x = (x - 158) / SQUARE_SIZE;
             y = (y - 158) / SQUARE_SIZE;
+            if (e.type == SDL_MOUSEBUTTONDOWN){
+                press = true;
+            }
+            else if (e.type == SDL_MOUSEBUTTONUP){
+                press = false;
+            }
             if (current_x != x || current_y != y){
                 if (board[current_y][current_x]==1 && 0 <= current_x && current_x < 7 && 0 <= current_y && current_y < 7){
                     cs[current_y][current_x]->currentTexture = 0;
                 }
-                if (board[y][x]==1 && 0 <= x && x < 7 && 0 <= y && y < 7){
-                    cs[y][x]->currentTexture = 1;
-                }
                 current_x = x;
                 current_y = y;
             }
-            if (e.type == SDL_MOUSEBUTTONDOWN){
-                std::cout << x << " " << y << std::endl;
+            if (board[y][x]==1 && 0 <= x && x < 7 && 0 <= y && y < 7){
+                cs[y][x]->currentTexture = (press ? 2 : 1);
             }
         }
         drawBoard();
