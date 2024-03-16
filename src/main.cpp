@@ -20,7 +20,9 @@ int main(int argc, char* args[]) {
     }
 
     banco = loadTexture("image/banco.png");
-    quanco[0] = loadTexture("image/quanco.png");
+    for (int i=0;i<3;i++){
+        quanco[i] = loadTexture("image/quanco" + std::to_string(i) + ".png");
+    }
 
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
@@ -36,6 +38,8 @@ int main(int argc, char* args[]) {
     bool quit = false;
     SDL_Event e;
     
+    int current_x = -1;
+    int current_y = -1;
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -43,10 +47,21 @@ int main(int argc, char* args[]) {
             }
             int x, y;
             SDL_GetMouseState(&x, &y);
-            std::cout << x << ' ' << y << std::endl;
-            //     int col = x / SQUARE_SIZE;
-            //     int row = y / SQUARE_SIZE;
-            // }
+            x = (x - 158) / SQUARE_SIZE;
+            y = (y - 158) / SQUARE_SIZE;
+            if (current_x != x || current_y != y){
+                if (board[current_y][current_x]==1 && 0 <= current_x && current_x < 7 && 0 <= current_y && current_y < 7){
+                    cs[current_y][current_x]->currentTexture = 0;
+                }
+                if (board[y][x]==1 && 0 <= x && x < 7 && 0 <= y && y < 7){
+                    cs[y][x]->currentTexture = 1;
+                }
+                current_x = x;
+                current_y = y;
+            }
+            if (e.type == SDL_MOUSEBUTTONDOWN){
+                std::cout << x << " " << y << std::endl;
+            }
         }
         drawBoard();
         drawChess();

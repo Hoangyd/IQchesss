@@ -42,12 +42,12 @@ void drawChess() {
                 continue;
             }
             SDL_Rect dest;
-            dest.x = j * SQUARE_SIZE + 160;
-            dest.y = i * SQUARE_SIZE + 160;
-            dest.w = SQUARE_SIZE - 15;
-            dest.h = SQUARE_SIZE - 15;
+            dest.x = j * SQUARE_SIZE + 158;
+            dest.y = i * SQUARE_SIZE + 158;
+            dest.w = SQUARE_SIZE - 11;
+            dest.h = SQUARE_SIZE - 11;
             SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-            SDL_RenderCopy(gRenderer, quanco[0], NULL, &dest);
+            SDL_RenderCopy(gRenderer, quanco[cs[i][j]->currentTexture], NULL, &dest);
         }
     }
 }
