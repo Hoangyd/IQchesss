@@ -3,7 +3,7 @@
 
 const int SCREEN_WIDTH = 900;
 const int SCREEN_HEIGHT = 900;
-const int SQUARE_SIZE = 85;
+const int SQUARE_SIZE = SCREEN_WIDTH/10.588;
 SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 SDL_Texture* banco = nullptr;
@@ -42,11 +42,10 @@ void drawChess() {
                 continue;
             }
             SDL_Rect dest;
-            dest.x = j * SQUARE_SIZE + 158;
-            dest.y = i * SQUARE_SIZE + 158;
-            dest.w = SQUARE_SIZE - 11;
-            dest.h = SQUARE_SIZE - 11;
-            SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+            dest.x = j * SQUARE_SIZE + SCREEN_WIDTH/5.7;
+            dest.y = i * SQUARE_SIZE + SCREEN_HEIGHT/5.7;
+            dest.w = SQUARE_SIZE - SCREEN_WIDTH/81.8;
+            dest.h = SQUARE_SIZE - SCREEN_HEIGHT/81.8;
             SDL_RenderCopy(gRenderer, quanco[cs[i][j]->currentTexture], NULL, &dest);
         }
     }
@@ -62,15 +61,19 @@ void drawBoard() {
     dest.h = SCREEN_HEIGHT;
     SDL_RenderCopy(gRenderer, banco, &src, &dest);
 }
-// Hàm kiểm tra ô có thể di chuyển
-    bool isValidMove(int x, int y) {
-        if ((x == 0 && y == 0) || (x == 1 && y == 0) || (x == 0 && y == 1) || (x == 1 && y == 1) ||
-            (x == 6 && y == 0) || (x == 6 && y == 1) || (x == 5 && y == 1) || (x == 5 && y == 0) ||
-            (x == 0 && y == 5) || (x == 0 && y == 6) || (x == 1 && y == 5) || (x == 1 && y == 6) ||
-            (x == 5 && y == 5) || (x == 5 && y == 6) || (x == 6 && y == 5) || (x == 6 && y == 6)) {
-            return false; // Ô không thể di chuyển tới
-        }
-        return true; // Ô có thể di chuyển tới
-    }
 
+bool isInRange(int value, int mn, int mx){
+    return mn <= value && value < mx;
+}
 
+bool isAPiece(int x, int y){
+    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 1;
+}
+
+bool isEmpty(int x, int y){
+    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 0;
+}
+
+void print(int x, int y){
+    cout << "(" << x << "," << y << ") ";
+}

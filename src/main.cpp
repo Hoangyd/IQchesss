@@ -3,6 +3,8 @@
 #include "../include/SDL2/SDL_image.h"
 #include <iostream>
 
+using namespace std;
+
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL không thể khởi tạo! Lỗi SDL: " << SDL_GetError() << std::endl;
@@ -38,37 +40,64 @@ int main(int argc, char* args[]) {
     bool quit = false;
     SDL_Event e;
     
-    int current_x = -1;
-    int current_y = -1;
-    bool press = false;
+    int previous_x=-1, previous_y=-1;
+    int current_x=-1, current_y=-1;
+    int selected_x=-1, selected_y=-1;
+    int mouse_x, mouse_y;
+    chess * selected = nullptr;
+
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            x = (x - 158) / SQUARE_SIZE;
-            y = (y - 158) / SQUARE_SIZE;
+            SDL_GetMouseState(&mouse_x, &mouse_y);
+            current_x = (mouse_x - SCREEN_WIDTH/5.7) / SQUARE_SIZE;
+            current_y = (mouse_y - SCREEN_HEIGHT/5.7) / SQUARE_SIZE;
             if (e.type == SDL_MOUSEBUTTONDOWN){
-                press = true;
-            }
-            else if (e.type == SDL_MOUSEBUTTONUP){
-                press = false;
-            }
-            if (current_x != x || current_y != y){
-                if (board[current_y][current_x]==1 && 0 <= current_x && current_x < 7 && 0 <= current_y && current_y < 7){
-                    cs[current_y][current_x]->currentTexture = 0;
+                if (e.button.button == SDL_BUTTON_LEFT){
+                    if (selected == nullptr && isAPiece(current_x, current_y)){
+                        cs[current_y][current_x]->currentTexture = 2;
+                        selected_x = current_x;
+                        selected_y = current_y;
+                        selected = cs[current_y][current_x];
+                        board[current_y][current_x] = 0;
+                        cs[current_y][current_x] = nullptr;
+                    }
+                    else if (selected != nullptr && isEmpty(current_x, current_y)){
+                        cs[current_y][current_x] = selected;
+                        cs[current_y][current_x]->currentTexture = 1;
+                        board[current_y][current_x] = 1;
+                        selected = nullptr;
+                        selected_x = selected_y = -1;
+                    }
                 }
-                current_x = x;
-                current_y = y;
-            }
-            if (board[y][x]==1 && 0 <= x && x < 7 && 0 <= y && y < 7){
-                cs[y][x]->currentTexture = (press ? 2 : 1);
             }
         }
+        if (current_x != previous_x || current_y != previous_y){
+            if (isAPiece(previous_x, previous_y) && (previous_x != selected_x || previous_y != selected_y)){
+                cs[previous_y][previous_x]->currentTexture = 0;
+            }
+            previous_x = current_x;
+            previous_y = current_y;
+        }
+        if (isAPiece(current_x, current_y) && (current_y != selected_y || current_x != selected_x)){
+            cs[current_y][current_x]->currentTexture = 1;
+        }
+
+        SDL_SetRenderDrawColor(gRenderer, 0,0,0,255);
+        SDL_RenderClear(gRenderer);
+
         drawBoard();
         drawChess();
+        if (selected != nullptr){
+            SDL_Rect dest;
+            dest.w = SQUARE_SIZE - SCREEN_WIDTH/81.8;
+            dest.h = SQUARE_SIZE - SCREEN_HEIGHT/81.8;
+            dest.x = mouse_x - dest.w/2;
+            dest.y = mouse_y - dest.h/2;
+            SDL_RenderCopy(gRenderer, quanco[0], NULL, &dest);
+        }
         SDL_RenderPresent(gRenderer);
     }
    

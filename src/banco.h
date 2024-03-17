@@ -6,6 +6,8 @@
 #include <iostream>
 #include <cmath>
 
+using namespace std;
+
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 extern const int SQUARE_SIZE;
@@ -16,6 +18,10 @@ extern SDL_Texture* quanco[3];
 
 bool isValidMove(int x1, int y1, int x2, int y2);
 int LoseOrWin();
+bool isInRange(int value, int mn, int mx);
+bool isAPiece(int x, int y);
+bool isEmpty(int x, int y);
+void print(int x, int y);
 
 SDL_Texture* loadTexture(const std::string& path);
 void drawChess();
