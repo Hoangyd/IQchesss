@@ -41,6 +41,9 @@ int main(int argc, char* args[]) {
     Mix_VolumeMusic(32);
     Mix_PlayMusic(bg_music, -1);
 
+    camco = Mix_LoadWAV("sound/cam.ogg");
+    datco = Mix_LoadWAV("sound/dat.ogg");
+
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
             if (board[i][j]!=1){
@@ -78,6 +81,7 @@ int main(int argc, char* args[]) {
                         selected = cs[current_y][current_x];
                         board[current_y][current_x] = 0;
                         cs[current_y][current_x] = nullptr;
+                        Mix_PlayChannel(-1, camco, 0);
                     }
                     else if (selected != nullptr && isEmpty(current_x, current_y)){
                         cs[current_y][current_x] = selected;
@@ -85,6 +89,7 @@ int main(int argc, char* args[]) {
                         board[current_y][current_x] = 1;
                         selected = nullptr;
                         selected_x = selected_y = -1;
+                        Mix_PlayChannel(-1, datco, 0);
                     }
                 }
             }

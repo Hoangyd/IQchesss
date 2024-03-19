@@ -29,6 +29,8 @@ void drawChess();
 void drawBoard();
 
 extern Mix_Music* bg_music;
+extern Mix_Chunk* camco;
+extern Mix_Chunk* datco;
 
 class chess{
 public:

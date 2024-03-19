@@ -1,21 +1,23 @@
 
 #include "banco.h"
 
-const int SCREEN_WIDTH = 900;
-const int SCREEN_HEIGHT = 900;
+const int SCREEN_WIDTH = 700;
+const int SCREEN_HEIGHT = 700;
 const int SQUARE_SIZE = SCREEN_WIDTH/10.588;
 SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 SDL_Texture* banco = nullptr;
 SDL_Texture* quanco[3] = {nullptr, nullptr, nullptr};
 Mix_Music* bg_music = nullptr;
+Mix_Chunk* camco = nullptr;
+Mix_Chunk* datco = nullptr;
 
 int board[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},
     {-1, -1, 1, 1, 1, -1, -1},
     { 1,  1, 1, 1, 1,  1,  1},
     { 1,  1, 1, 0, 1,  1,  1},
-    { 1,  1, 1, 0, 1,  1,  1},
+    { 1,  1, 1, 1, 1,  1,  1},
     {-1, -1, 1, 1, 1, -1, -1},
     {-1, -1, 1, 1, 1, -1, -1},
 };
