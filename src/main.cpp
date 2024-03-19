@@ -1,6 +1,7 @@
 #include "banco.h"
 #include "../include/SDL2/SDL.h"
 #include "../include/SDL2/SDL_image.h"
+#include "../include/SDL2/SDL_mixer.h"
 #include <iostream>
 
 using namespace std;
@@ -18,6 +19,16 @@ int main(int argc, char* args[]) {
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
     if (gRenderer == nullptr) {
         std::cerr << "Không thể tạo renderer! Lỗi SDL: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+    int format = MIX_INIT_OGG;
+    if (Mix_Init(format) & format != format)
+    {
+        std::cerr << "Không thể tạo format! Lỗi SDL_Mixer: " << Mix_GetError() << std::endl;
+    }
+    if (Mix_OpenAudio(44100, AUDIO_S32SYS, 2, 4096) < 0)
+    {
+        std::cerr << "Không thể mở thiết bị âm thanh! Lỗi SDL_Mixer: " << Mix_GetError() << std::endl;
         return 1;
     }
 
