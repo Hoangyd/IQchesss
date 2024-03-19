@@ -37,6 +37,10 @@ int main(int argc, char* args[]) {
         quanco[i] = loadTexture("image/quanco" + std::to_string(i) + ".png");
     }
 
+    bg_music = Mix_LoadMUS("sound/music.ogg");
+    Mix_VolumeMusic(32);
+    Mix_PlayMusic(bg_music, -1);
+
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
             if (board[i][j]!=1){
@@ -122,10 +126,13 @@ int main(int argc, char* args[]) {
         }
     }
 
+    Mix_FreeMusic(bg_music);
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
     gWindow = nullptr;
     gRenderer = nullptr;
+    Mix_CloseAudio();
+    Mix_Quit();
     SDL_Quit();
     return 0;
 }

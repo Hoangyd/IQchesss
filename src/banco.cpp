@@ -8,6 +8,7 @@ SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 SDL_Texture* banco = nullptr;
 SDL_Texture* quanco[3] = {nullptr, nullptr, nullptr};
+Mix_Music* bg_music = nullptr;
 
 int board[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},

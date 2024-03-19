@@ -3,6 +3,7 @@
 
 #include "../include/SDL2/SDL.h"
 #include "../include/SDL2/SDL_image.h"
+#include "../include/SDL2/SDL_mixer.h"
 #include <iostream>
 #include <cmath>
 
@@ -26,6 +27,8 @@ void print(int x, int y);
 SDL_Texture* loadTexture(const std::string& path);
 void drawChess();
 void drawBoard();
+
+extern Mix_Music* bg_music;
 
 class chess{
 public:
