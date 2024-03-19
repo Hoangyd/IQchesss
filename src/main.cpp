@@ -84,12 +84,32 @@ int main(int argc, char* args[]) {
                         Mix_PlayChannel(-1, camco, 0);
                     }
                     else if (selected != nullptr && isEmpty(current_x, current_y)){
-                        cs[current_y][current_x] = selected;
-                        cs[current_y][current_x]->currentTexture = 1;
-                        board[current_y][current_x] = 1;
-                        selected = nullptr;
-                        selected_x = selected_y = -1;
-                        Mix_PlayChannel(-1, datco, 0);
+                        bool a = (abs(current_x-selected_x)==2 && selected_y==current_y);
+                        bool b = (abs(current_y-selected_y)==2 && selected_x==current_x);
+                        bool c = (current_x == selected_x && current_y == selected_y);
+                        if (a == true || b == true || c == true){
+                            bool d = true;
+                            if (!c){
+                                int mid_x = (current_x + selected_x)/2;
+                                int mid_y = (current_y + selected_y)/2;
+                                if (board[mid_y][mid_x]==1 || cs[mid_y][mid_x]){
+                                    board[mid_y][mid_x] = 0;
+                                    delete cs[mid_y][mid_x];
+                                    cs[mid_y][mid_x] = nullptr;
+                                }
+                                else{
+                                    d = false;
+                                }
+                            }
+                            if (d == true){
+                                cs[current_y][current_x] = selected;
+                                cs[current_y][current_x]->currentTexture = 1;
+                                board[current_y][current_x] = 1;
+                                selected = nullptr;
+                                selected_x = selected_y = -1;
+                                Mix_PlayChannel(-1, datco, 0);
+                            }
+                        }
                     }
                 }
             }
@@ -124,7 +144,7 @@ int main(int argc, char* args[]) {
     
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
-            if (board[i][j]==1){
+            if (board[i][j]==1 || cs[i][j]){
                 delete cs[i][j];
                 cs[i][j] = nullptr;
             }

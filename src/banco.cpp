@@ -70,11 +70,11 @@ bool isInRange(int value, int mn, int mx){
 }
 
 bool isAPiece(int x, int y){
-    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 1;
+    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 1 && cs[y][x];
 }
 
 bool isEmpty(int x, int y){
-    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 0;
+    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 0 && !cs[y][x];
 }
 
 void print(int x, int y){
