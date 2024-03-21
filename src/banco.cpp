@@ -11,6 +11,7 @@ SDL_Texture* quanco[3] = {nullptr, nullptr, nullptr};
 Mix_Music* bg_music = nullptr;
 Mix_Chunk* camco = nullptr;
 Mix_Chunk* datco = nullptr;
+int soco = 32;
 
 int board[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},
@@ -79,4 +80,32 @@ bool isEmpty(int x, int y){
 
 void print(int x, int y){
     cout << "(" << x << "," << y << ") ";
+}
+
+int LoseOrWin(){
+    if (soco==1){
+        if (board[3][3]==1){
+            return 1;
+        }
+        else{
+            return -1;
+        }
+    }
+
+    for (int i=0;i<7;i++){
+        for (int j=0;j<7;j++){
+            if (board[i][j] != 1){
+                continue;
+            }
+            bool u = isAPiece(i-1, j) && isEmpty(i-2, j);
+            bool d = isAPiece(i+1, j) && isEmpty(i+2, j);
+            bool r = isAPiece(i, j+1) && isEmpty(i, j+2);
+            bool l = isAPiece(i, j-1) && isEmpty(i, j-2);
+            if (u || d || r || l){
+                return 0;
+            }
+        }
+    }
+
+    return -1;
 }

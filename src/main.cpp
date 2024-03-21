@@ -96,6 +96,7 @@ int main(int argc, char* args[]) {
                                     board[mid_y][mid_x] = 0;
                                     delete cs[mid_y][mid_x];
                                     cs[mid_y][mid_x] = nullptr;
+                                    soco--;
                                 }
                                 else{
                                     d = false;
@@ -108,6 +109,7 @@ int main(int argc, char* args[]) {
                                 selected = nullptr;
                                 selected_x = selected_y = -1;
                                 Mix_PlayChannel(-1, datco, 0);
+                                cout << soco << " " << LoseOrWin() << endl;
                             }
                         }
                     }

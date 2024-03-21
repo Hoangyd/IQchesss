@@ -16,6 +16,7 @@ extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern SDL_Texture* banco;
 extern SDL_Texture* quanco[3];
+extern int soco;
 
 bool isValidMove(int x1, int y1, int x2, int y2);
 int LoseOrWin();
