@@ -44,13 +44,13 @@ int main(int argc, char* args[]) {
     camco = Mix_LoadWAV("sound/cam.ogg");
     datco = Mix_LoadWAV("sound/dat.ogg");
 
-    for (int i=0;i<7;i++){
-        for (int j=0;j<7;j++){
-            if (board[i][j]!=1){
-                cs[i][j] = nullptr;
+    for (int row=0;row<7;row++){
+        for (int col=0;col<7;col++){
+            if (board[row][col]!=1){
+                cs[row][col] = nullptr;
             }
             else{
-                cs[i][j] = new chess();
+                cs[row][col] = new chess();
             }
         }
     }
@@ -58,10 +58,12 @@ int main(int argc, char* args[]) {
     bool quit = false;
     SDL_Event e;
     
-    int previous_x=-1, previous_y=-1;
-    int current_x=-1, current_y=-1;
-    int selected_x=-1, selected_y=-1;
-    int mouse_x, mouse_y;
+    int mouse_x=0, mouse_y=0;
+
+    int prev_row=-1, prev_col=-1;
+    int cur_row=-1, cur_col=-1;
+
+    int selected_row=-1, selected_col=-1;
     chess * selected = nullptr;
 
     while (!quit) {
@@ -70,61 +72,57 @@ int main(int argc, char* args[]) {
                 quit = true;
             }
             SDL_GetMouseState(&mouse_x, &mouse_y);
-            current_x = (mouse_x - SCREEN_WIDTH/5.7) / SQUARE_SIZE;
-            current_y = (mouse_y - SCREEN_HEIGHT/5.7) / SQUARE_SIZE;
+            cur_row = (mouse_y - SCREEN_WIDTH/5.7) / SQUARE_SIZE;
+            cur_col = (mouse_x - SCREEN_HEIGHT/5.7) / SQUARE_SIZE;
             if (e.type == SDL_MOUSEBUTTONDOWN){
                 if (e.button.button == SDL_BUTTON_LEFT){
-                    if (selected == nullptr && isAPiece(current_x, current_y)){
-                        cs[current_y][current_x]->currentTexture = 2;
-                        selected_x = current_x;
-                        selected_y = current_y;
-                        selected = cs[current_y][current_x];
-                        board[current_y][current_x] = 0;
-                        cs[current_y][current_x] = nullptr;
+                    if (selected == nullptr && isAPiece(cur_row, cur_col)){
+                        cs[cur_row][cur_col]->currentTexture = 2;
+                        selected_row = cur_row;
+                        selected_col = cur_col;
+                        selected = cs[cur_row][cur_col];
+                        board[cur_row][cur_col] = 0;
+                        cs[cur_row][cur_col] = nullptr;
                         Mix_PlayChannel(-1, camco, 0);
                     }
-                    else if (selected != nullptr && isEmpty(current_x, current_y)){
-                        bool a = (abs(current_x-selected_x)==2 && selected_y==current_y);
-                        bool b = (abs(current_y-selected_y)==2 && selected_x==current_x);
-                        bool c = (current_x == selected_x && current_y == selected_y);
-                        if (a == true || b == true || c == true){
-                            bool d = true;
-                            if (!c){
-                                int mid_x = (current_x + selected_x)/2;
-                                int mid_y = (current_y + selected_y)/2;
-                                if (board[mid_y][mid_x]==1 || cs[mid_y][mid_x]){
-                                    board[mid_y][mid_x] = 0;
-                                    delete cs[mid_y][mid_x];
-                                    cs[mid_y][mid_x] = nullptr;
-                                    soco--;
-                                }
-                                else{
-                                    d = false;
-                                }
+                    else if (selected != nullptr){
+                        if (!isEmpty(cur_row, cur_col)) continue;
+                        bool a = (cur_row == selected_row && cur_col == selected_col);
+                        bool b = false;
+                        if (!a){
+                            bool r = abs(cur_row - selected_row) == 2;
+                            bool c = abs(cur_col - selected_col) == 2;
+                            int mid_row = (cur_row + selected_row) / 2;
+                            int mid_col = (cur_col + selected_col) / 2;
+                            bool ok = board[mid_row][mid_col] == 1 && cs[mid_row][mid_col];
+                            if ((r || c) && ok){
+                                board[mid_row][mid_col] = 0;
+                                delete cs[mid_row][mid_col];
+                                cs[mid_row][mid_col] = nullptr;
+                                b = true;
                             }
-                            if (d == true){
-                                cs[current_y][current_x] = selected;
-                                cs[current_y][current_x]->currentTexture = 1;
-                                board[current_y][current_x] = 1;
-                                selected = nullptr;
-                                selected_x = selected_y = -1;
-                                Mix_PlayChannel(-1, datco, 0);
-                                cout << soco << " " << LoseOrWin() << endl;
-                            }
+                        }
+                        if (a || b){
+                            cs[cur_row][cur_col] = selected;
+                            cs[cur_row][cur_col]->currentTexture = 1;
+                            board[cur_row][cur_col] = 1;
+                            selected = nullptr;
+                            selected_row = selected_col = -1;
+                            Mix_PlayChannel(-1, datco, 0);
                         }
                     }
                 }
             }
         }
-        if (current_x != previous_x || current_y != previous_y){
-            if (isAPiece(previous_x, previous_y) && (previous_x != selected_x || previous_y != selected_y)){
-                cs[previous_y][previous_x]->currentTexture = 0;
+        if (cur_row != prev_row || cur_col != prev_col){
+            if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col)){
+                cs[prev_row][prev_col]->currentTexture = 0;
             }
-            previous_x = current_x;
-            previous_y = current_y;
+            prev_row = cur_row;
+            prev_col = cur_col;
         }
-        if (isAPiece(current_x, current_y) && (current_y != selected_y || current_x != selected_x)){
-            cs[current_y][current_x]->currentTexture = 1;
+        if (isAPiece(cur_row, cur_col) && (cur_row != selected_row || cur_col != selected_col)){
+            cs[cur_row][cur_col]->currentTexture = 1;
         }
 
         SDL_SetRenderDrawColor(gRenderer, 0,0,0,255);
@@ -143,12 +141,12 @@ int main(int argc, char* args[]) {
         SDL_RenderPresent(gRenderer);
     }
    
-    
-    for (int i=0;i<7;i++){
-        for (int j=0;j<7;j++){
-            if (board[i][j]==1 || cs[i][j]){
-                delete cs[i][j];
-                cs[i][j] = nullptr;
+    for (int row=0;row<7;row++){
+        for (int col=0;col<7;col++){
+            if (board[row][col]==1 || cs[row][col]){
+                board[row][col] = 0;
+                delete cs[row][col];
+                cs[row][col] = nullptr;
             }
         }
     }

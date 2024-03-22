@@ -40,17 +40,17 @@ SDL_Texture* loadTexture(const std::string& path) {
 }
 
 void drawChess() {
-    for (int i=0;i<7;i++){
-        for (int j=0;j<7;j++){
-            if (board[i][j]!=1){
+    for (int row=0;row<7;row++){
+        for (int col=0;col<7;col++){
+            if (board[row][col]!=1){
                 continue;
             }
             SDL_Rect dest;
-            dest.x = j * SQUARE_SIZE + SCREEN_WIDTH/5.7;
-            dest.y = i * SQUARE_SIZE + SCREEN_HEIGHT/5.7;
+            dest.x = col * SQUARE_SIZE + SCREEN_WIDTH/5.7;
+            dest.y = row * SQUARE_SIZE + SCREEN_HEIGHT/5.7;
             dest.w = SQUARE_SIZE - SCREEN_WIDTH/81.8;
             dest.h = SQUARE_SIZE - SCREEN_HEIGHT/81.8;
-            SDL_RenderCopy(gRenderer, quanco[cs[i][j]->currentTexture], NULL, &dest);
+            SDL_RenderCopy(gRenderer, quanco[cs[row][col]->currentTexture], NULL, &dest);
         }
     }
 }
@@ -70,16 +70,16 @@ bool isInRange(int value, int mn, int mx){
     return mn <= value && value < mx;
 }
 
-bool isAPiece(int x, int y){
-    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 1 && cs[y][x];
+bool isAPiece(int row, int col){
+    return isInRange(row, 0, 7) && isInRange(col, 0, 7) && board[row][col] == 1 && cs[row][col];
 }
 
-bool isEmpty(int x, int y){
-    return isInRange(x, 0, 7) && isInRange(y, 0, 7) && board[y][x] == 0 && !cs[y][x];
+bool isEmpty(int row, int col){
+    return isInRange(row, 0, 7) && isInRange(col, 0, 7) && board[row][col] == 0 && !cs[row][col];
 }
 
-void print(int x, int y){
-    cout << "(" << x << "," << y << ") ";
+void print(int row, int col){
+    cout << "(" << row << "," << col << ") ";
 }
 
 int LoseOrWin(){
@@ -94,7 +94,7 @@ int LoseOrWin(){
 
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
-            if (board[i][j] != 1){
+            if (board[j][i] != 1){
                 continue;
             }
             bool u = isAPiece(i-1, j) && isEmpty(i-2, j);

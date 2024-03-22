@@ -18,12 +18,11 @@ extern SDL_Texture* banco;
 extern SDL_Texture* quanco[3];
 extern int soco;
 
-bool isValidMove(int x1, int y1, int x2, int y2);
 int LoseOrWin();
 bool isInRange(int value, int mn, int mx);
-bool isAPiece(int x, int y);
-bool isEmpty(int x, int y);
-void print(int x, int y);
+bool isAPiece(int row, int col);
+bool isEmpty(int row, int col);
+void print(int row, int col);
 
 SDL_Texture* loadTexture(const std::string& path);
 void drawChess();
