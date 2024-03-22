@@ -84,7 +84,7 @@ void print(int row, int col){
 
 int LoseOrWin(){
     if (soco==1){
-        if (board[3][3]==1){
+        if (board[3][3]==1 || cs[3][3]){
             return 1;
         }
         else{
@@ -92,15 +92,15 @@ int LoseOrWin(){
         }
     }
 
-    for (int i=0;i<7;i++){
-        for (int j=0;j<7;j++){
-            if (board[j][i] != 1){
+    for (int row=0;row<7;row++){
+        for (int col=0;col<7;col++){
+            if (board[row][col] != 1){
                 continue;
             }
-            bool u = isAPiece(i-1, j) && isEmpty(i-2, j);
-            bool d = isAPiece(i+1, j) && isEmpty(i+2, j);
-            bool r = isAPiece(i, j+1) && isEmpty(i, j+2);
-            bool l = isAPiece(i, j-1) && isEmpty(i, j-2);
+            bool u = isAPiece(row-1, col) && isEmpty(row-2, col);
+            bool d = isAPiece(row+1, col) && isEmpty(row+2, col);
+            bool r = isAPiece(row, col+1) && isEmpty(row, col+2);
+            bool l = isAPiece(row, col-1) && isEmpty(row, col-2);
             if (u || d || r || l){
                 return 0;
             }

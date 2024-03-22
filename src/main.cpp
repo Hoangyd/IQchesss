@@ -39,7 +39,7 @@ int main(int argc, char* args[]) {
 
     bg_music = Mix_LoadMUS("sound/music.ogg");
     Mix_VolumeMusic(32);
-    Mix_PlayMusic(bg_music, -1);
+    // Mix_PlayMusic(bg_music, -1);
 
     camco = Mix_LoadWAV("sound/cam.ogg");
     datco = Mix_LoadWAV("sound/dat.ogg");
@@ -100,6 +100,7 @@ int main(int argc, char* args[]) {
                                 delete cs[mid_row][mid_col];
                                 cs[mid_row][mid_col] = nullptr;
                                 b = true;
+                                soco--;
                             }
                         }
                         if (a || b){
@@ -109,6 +110,7 @@ int main(int argc, char* args[]) {
                             selected = nullptr;
                             selected_row = selected_col = -1;
                             Mix_PlayChannel(-1, datco, 0);
+                            cout << soco << " " << LoseOrWin() << endl;
                         }
                     }
                 }
