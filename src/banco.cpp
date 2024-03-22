@@ -8,10 +8,12 @@ SDL_Window* gWindow = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 SDL_Texture* banco = nullptr;
 SDL_Texture* quanco[3] = {nullptr, nullptr, nullptr};
+SDL_Texture* playbtn = nullptr;
+SDL_Texture* exitbtn = nullptr;
 Mix_Music* bg_music = nullptr;
 Mix_Chunk* camco = nullptr;
 Mix_Chunk* datco = nullptr;
-int soco = 32;
+int soco = 0;
 
 int board[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},
@@ -22,6 +24,14 @@ int board[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},
     {-1, -1, 1, 1, 1, -1, -1},
 };
+//     {-1, -1, 0, 0, 0, -1, -1},
+//     {-1, -1, 0, 0, 1, -1, -1},
+//     { 0,  0, 0, 0, 0,  0,  0},
+//     { 0,  0, 0, 0, 1,  1,  0},
+//     { 0,  0, 0, 0, 0,  0,  0},
+//     {-1, -1, 0, 0, 1, -1, -1},
+//     {-1, -1, 0, 0, 1, -1, -1},
+// };
 
 chess * cs[7][7];
 
@@ -50,7 +60,7 @@ void drawChess() {
             dest.y = row * SQUARE_SIZE + SCREEN_HEIGHT/5.7;
             dest.w = SQUARE_SIZE - SCREEN_WIDTH/81.8;
             dest.h = SQUARE_SIZE - SCREEN_HEIGHT/81.8;
-            SDL_RenderCopy(gRenderer, quanco[cs[row][col]->currentTexture], NULL, &dest);
+            SDL_RenderCopy(gRenderer, quanco[cs[row][col]->currentTexture], nullptr, &dest);
         }
     }
 }

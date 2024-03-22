@@ -36,6 +36,10 @@ int main(int argc, char* args[]) {
     for (int i=0;i<3;i++){
         quanco[i] = loadTexture("image/quanco" + std::to_string(i) + ".png");
     }
+    playbtn = loadTexture("image/playbutton.png");
+    cout << playbtn;
+    exitbtn = loadTexture("image/exitbutton.png");
+    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 
     bg_music = Mix_LoadMUS("sound/music.ogg");
     Mix_VolumeMusic(32);
@@ -51,11 +55,13 @@ int main(int argc, char* args[]) {
             }
             else{
                 cs[row][col] = new chess();
+                soco++;
             }
         }
     }
 
     bool quit = false;
+    bool play = false;
     SDL_Event e;
     
     int mouse_x=0, mouse_y=0;
@@ -66,6 +72,17 @@ int main(int argc, char* args[]) {
     int selected_row=-1, selected_col=-1;
     chess * selected = nullptr;
 
+    SDL_Rect playdst;
+    playdst.x = SCREEN_WIDTH/2 - 105;
+    playdst.y = SCREEN_HEIGHT/2 - 50;
+    playdst.w = playdst.h = 100;
+    
+    SDL_Rect exitdst;
+    exitdst.x = SCREEN_WIDTH/2 + 5;
+    exitdst.y = SCREEN_HEIGHT/2 - 50;
+    exitdst.w = exitdst.h = 100;
+
+    int state = 0;
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -76,70 +93,91 @@ int main(int argc, char* args[]) {
             cur_col = (mouse_x - SCREEN_HEIGHT/5.7) / SQUARE_SIZE;
             if (e.type == SDL_MOUSEBUTTONDOWN){
                 if (e.button.button == SDL_BUTTON_LEFT){
-                    if (selected == nullptr && isAPiece(cur_row, cur_col)){
-                        cs[cur_row][cur_col]->currentTexture = 2;
-                        selected_row = cur_row;
-                        selected_col = cur_col;
-                        selected = cs[cur_row][cur_col];
-                        board[cur_row][cur_col] = 0;
-                        cs[cur_row][cur_col] = nullptr;
-                        Mix_PlayChannel(-1, camco, 0);
-                    }
-                    else if (selected != nullptr){
-                        if (!isEmpty(cur_row, cur_col)) continue;
-                        bool a = (cur_row == selected_row && cur_col == selected_col);
-                        bool b = false;
-                        if (!a){
-                            bool r = abs(cur_row - selected_row) == 2;
-                            bool c = abs(cur_col - selected_col) == 2;
-                            int mid_row = (cur_row + selected_row) / 2;
-                            int mid_col = (cur_col + selected_col) / 2;
-                            bool ok = board[mid_row][mid_col] == 1 && cs[mid_row][mid_col];
-                            if ((r || c) && ok){
-                                board[mid_row][mid_col] = 0;
-                                delete cs[mid_row][mid_col];
-                                cs[mid_row][mid_col] = nullptr;
-                                b = true;
-                                soco--;
+                    if (state == 0 && play){
+                        if (selected == nullptr && isAPiece(cur_row, cur_col)){
+                            cs[cur_row][cur_col]->currentTexture = 2;
+                            selected_row = cur_row;
+                            selected_col = cur_col;
+                            selected = cs[cur_row][cur_col];
+                            board[cur_row][cur_col] = 0;
+                            cs[cur_row][cur_col] = nullptr;
+                            Mix_PlayChannel(-1, camco, 0);
+                        }
+                        else if (selected != nullptr){
+                            if (!isEmpty(cur_row, cur_col)) continue;
+                            bool a = (cur_row == selected_row && cur_col == selected_col);
+                            bool b = false;
+                            if (!a){
+                                bool r = abs(cur_row - selected_row) == 2;
+                                bool c = abs(cur_col - selected_col) == 2;
+                                int mid_row = (cur_row + selected_row) / 2;
+                                int mid_col = (cur_col + selected_col) / 2;
+                                bool ok = board[mid_row][mid_col] == 1 && cs[mid_row][mid_col];
+                                if ((r || c) && ok){
+                                    board[mid_row][mid_col] = 0;
+                                    delete cs[mid_row][mid_col];
+                                    cs[mid_row][mid_col] = nullptr;
+                                    b = true;
+                                    soco--;
+                                }
+                            }
+                            if (a || b){
+                                cs[cur_row][cur_col] = selected;
+                                cs[cur_row][cur_col]->currentTexture = 1;
+                                board[cur_row][cur_col] = 1;
+                                selected = nullptr;
+                                selected_row = selected_col = -1;
+                                Mix_PlayChannel(-1, datco, 0);
+                                state = LoseOrWin();
                             }
                         }
-                        if (a || b){
-                            cs[cur_row][cur_col] = selected;
-                            cs[cur_row][cur_col]->currentTexture = 1;
-                            board[cur_row][cur_col] = 1;
-                            selected = nullptr;
-                            selected_row = selected_col = -1;
-                            Mix_PlayChannel(-1, datco, 0);
-                            cout << soco << " " << LoseOrWin() << endl;
+                    }
+                    if (!play){
+                        if (isInRange(mouse_x, playdst.x, playdst.x + playdst.h) && isInRange(mouse_y, playdst.y, playdst.y + playdst.h)){
+                            play = true;
+                        }
+                        else if (isInRange(mouse_x, exitdst.x, exitdst.x + exitdst.h) && isInRange(mouse_y, exitdst.y, exitdst.y + exitdst.h)){
+                            quit = true;
                         }
                     }
                 }
             }
         }
-        if (cur_row != prev_row || cur_col != prev_col){
-            if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col)){
-                cs[prev_row][prev_col]->currentTexture = 0;
-            }
-            prev_row = cur_row;
-            prev_col = cur_col;
-        }
-        if (isAPiece(cur_row, cur_col) && (cur_row != selected_row || cur_col != selected_col)){
-            cs[cur_row][cur_col]->currentTexture = 1;
-        }
 
         SDL_SetRenderDrawColor(gRenderer, 0,0,0,255);
         SDL_RenderClear(gRenderer);
-
         drawBoard();
-        drawChess();
-        if (selected != nullptr){
-            SDL_Rect dest;
-            dest.w = SQUARE_SIZE - SCREEN_WIDTH/81.8;
-            dest.h = SQUARE_SIZE - SCREEN_HEIGHT/81.8;
-            dest.x = mouse_x - dest.w/2;
-            dest.y = mouse_y - dest.h/2;
-            SDL_RenderCopy(gRenderer, quanco[0], NULL, &dest);
+
+        if (!play){
+            SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 127);
+            SDL_RenderFillRect(gRenderer, nullptr);
+            SDL_RenderCopy(gRenderer, playbtn, nullptr, &playdst);
+            SDL_RenderCopy(gRenderer, exitbtn, nullptr, &exitdst);
+
         }
+        else{
+            if (cur_row != prev_row || cur_col != prev_col){
+                if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col)){
+                    cs[prev_row][prev_col]->currentTexture = 0;
+                }
+                prev_row = cur_row;
+                prev_col = cur_col;
+            }
+            if (isAPiece(cur_row, cur_col) && (cur_row != selected_row || cur_col != selected_col)){
+                cs[cur_row][cur_col]->currentTexture = 1;
+            }
+
+            drawChess();
+            if (selected != nullptr){
+                SDL_Rect dest;
+                dest.w = SQUARE_SIZE - SCREEN_WIDTH/81.8;
+                dest.h = SQUARE_SIZE - SCREEN_HEIGHT/81.8;
+                dest.x = mouse_x - dest.w/2;
+                dest.y = mouse_y - dest.h/2;
+                SDL_RenderCopy(gRenderer, quanco[0], nullptr, &dest);
+            }
+        }
+
         SDL_RenderPresent(gRenderer);
     }
    

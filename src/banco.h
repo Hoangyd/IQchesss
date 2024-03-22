@@ -16,6 +16,8 @@ extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern SDL_Texture* banco;
 extern SDL_Texture* quanco[3];
+extern SDL_Texture* playbtn;
+extern SDL_Texture* exitbtn;
 extern int soco;
 
 int LoseOrWin();
