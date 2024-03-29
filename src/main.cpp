@@ -137,7 +137,7 @@ int main(int argc, char *args[])
                                 Mix_PlayChannel(-1, datco, 0);
                                 for (int i = 0; i < 3; i++)
                                     state = LoseOrWin();
-                                if (state == 1)
+                                if (state != 0)
                                 {
                                     delay_win = SDL_GetTicks();
                                     play = false;
@@ -172,13 +172,13 @@ int main(int argc, char *args[])
         {
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 127);
             SDL_RenderFillRect(gRenderer, nullptr);
-            if (state != 1)
+            if (state != 0)
             {
-                SDL_RenderCopy(gRenderer, playbtn, nullptr, &playdst);
+                SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
             }
             else
             {
-                SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
+                SDL_RenderCopy(gRenderer, playbtn, nullptr, &playdst);
             }
             SDL_RenderCopy(gRenderer, exitbtn, nullptr, &exitdst);
         }
