@@ -74,14 +74,14 @@ int main(int argc, char *args[])
     chess *selected = nullptr;
 
     SDL_Rect playdst;
-    playdst.x = SCREEN_WIDTH / 2 - 110;
-    playdst.y = SCREEN_HEIGHT / 2 - 50;
-    playdst.w = playdst.h = 100;
+    playdst.w = playdst.h = SCREEN_HEIGHT / 9.0f;
+    playdst.x = SCREEN_WIDTH / 2.0f - playdst.w * 1.15f;
+    playdst.y = SCREEN_HEIGHT / 2.0f - playdst.h / 2.0f;
 
     SDL_Rect exitdst;
-    exitdst.x = SCREEN_WIDTH / 2 + 10;
-    exitdst.y = SCREEN_HEIGHT / 2 - 50;
-    exitdst.w = exitdst.h = 100;
+    exitdst.w = exitdst.h = SCREEN_HEIGHT / 9.0f;
+    exitdst.x = SCREEN_WIDTH / 2.0f + exitdst.w * 0.15f;
+    exitdst.y = SCREEN_HEIGHT / 2.0f - exitdst.h / 2.0f;
 
     int state = 0;
     int delay_win = -2000;
@@ -96,8 +96,8 @@ int main(int argc, char *args[])
                 quit = true;
             }
             SDL_GetMouseState(&mouse_x, &mouse_y);
-            cur_row = (mouse_y - SCREEN_WIDTH / 5.7) / SQUARE_SIZE;
-            cur_col = (mouse_x - SCREEN_HEIGHT / 5.7) / SQUARE_SIZE;
+            cur_row = (mouse_y - SCREEN_WIDTH / 5.7f) / SQUARE_SIZE;
+            cur_col = (mouse_x - SCREEN_HEIGHT / 5.7f) / SQUARE_SIZE;
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
                 if (e.button.button == SDL_BUTTON_LEFT)
@@ -195,8 +195,8 @@ int main(int argc, char *args[])
             SDL_RenderFillRect(gRenderer, nullptr);
             if (state != 0)
             {
-                DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3.5, 80);
-                DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2.5, 50);
+                DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f);
+                DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.5f, SCREEN_WIDTH / 18.0f);
                 SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
             }
             else
@@ -207,8 +207,8 @@ int main(int argc, char *args[])
         }
         else
         {
-            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), SCREEN_WIDTH / 5, SCREEN_HEIGHT / 20, 30);
-            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH / 5 * 4.5, SCREEN_HEIGHT / 20, 30);
+            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), SCREEN_WIDTH / 5.0f, SCREEN_HEIGHT / 20.0f, SCREEN_WIDTH / 30.0f);
+            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH / 5.0f * 4.5f, SCREEN_HEIGHT / 20.0f, SCREEN_WIDTH / 30.0f);
             if (cur_row != prev_row || cur_col != prev_col)
             {
                 if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col))
@@ -227,10 +227,10 @@ int main(int argc, char *args[])
             if (selected != nullptr)
             {
                 SDL_Rect dest;
-                dest.w = SQUARE_SIZE - SCREEN_WIDTH / 81.8;
-                dest.h = SQUARE_SIZE - SCREEN_HEIGHT / 81.8;
-                dest.x = mouse_x - dest.w / 2;
-                dest.y = mouse_y - dest.h / 2;
+                dest.w = SQUARE_SIZE - SCREEN_WIDTH / 81.8f;
+                dest.h = SQUARE_SIZE - SCREEN_HEIGHT / 81.8f;
+                dest.x = mouse_x - dest.w / 2.0f;
+                dest.y = mouse_y - dest.h / 2.0f;
                 SDL_RenderCopy(gRenderer, quanco[0], nullptr, &dest);
             }
         }

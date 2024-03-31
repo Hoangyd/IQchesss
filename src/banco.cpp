@@ -1,8 +1,8 @@
 
 #include "banco.h"
 
-const int SCREEN_WIDTH = 900;
-const int SCREEN_HEIGHT = 900;
+const int SCREEN_WIDTH = 700;
+const int SCREEN_HEIGHT = 700;
 const int SQUARE_SIZE = SCREEN_WIDTH / 10.588;
 SDL_Window *gWindow = nullptr;
 SDL_Renderer *gRenderer = nullptr;
@@ -20,14 +20,15 @@ TTF_Font *font = nullptr;
 int soco = 0;
 
 int board0[7][7] = {
-    {-1, -1, 1, 1, 1, -1, -1},
-    {-1, -1, 1, 1, 1, -1, -1},
-    {1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 0, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1},
-    {-1, -1, 1, 1, 1, -1, -1},
-    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 0, 0, 0, -1, -1},
+    {-1, -1, 0, 0, 1, -1, -1},
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 1, 1, 0},
+    {0, 0, 0, 0, 0, 0, 0},
+    {-1, -1, 0, 0, 1, -1, -1},
+    {-1, -1, 0, 0, 1, -1, -1},
 };
+
 int board[7][7] = {
     //     {-1, -1, 1, 1, 1, -1, -1},
     //     {-1, -1, 1, 1, 1, -1, -1},
@@ -76,10 +77,10 @@ void drawChess()
                 continue;
             }
             SDL_Rect dest;
-            dest.x = col * SQUARE_SIZE + SCREEN_WIDTH / 5.7;
-            dest.y = row * SQUARE_SIZE + SCREEN_HEIGHT / 5.7;
-            dest.w = SQUARE_SIZE - SCREEN_WIDTH / 81.8;
-            dest.h = SQUARE_SIZE - SCREEN_HEIGHT / 81.8;
+            dest.x = col * (SQUARE_SIZE * 1.005f) + SCREEN_WIDTH / 5.7f;
+            dest.y = row * (SQUARE_SIZE * 1.005f) + SCREEN_HEIGHT / 5.7f;
+            dest.w = SQUARE_SIZE - SCREEN_WIDTH / 81.8f;
+            dest.h = SQUARE_SIZE - SCREEN_HEIGHT / 81.8f;
             SDL_RenderCopy(gRenderer, quanco[cs[row][col]->currentTexture], nullptr, &dest);
         }
     }
@@ -188,8 +189,8 @@ void DisplayText(std::string text, int x, int y, int fs)
 
     SDL_Rect rect;
     TTF_SizeUTF8(font, text.c_str(), &rect.w, &rect.h);
-    rect.x = x - rect.w / 2;
-    rect.y = y - rect.h / 2;
+    rect.x = x - rect.w / 2.0f;
+    rect.y = y - rect.h / 2.0f;
 
     SDL_SetRenderDrawColor(gRenderer, 25, 25, 25, 128);
     SDL_RenderFillRect(gRenderer, &rect);
@@ -207,14 +208,14 @@ std::string addzero(int n, int len)
 
 std::string timeformat(int ms)
 {
-    float fsecond = (float)ms / 1000.0;
+    float fsecond = (float)ms / 1000.0f;
     int second = fsecond;
     fsecond -= (float)second;
-    fsecond *= 1000;
-    int hour = second / 3600;
-    second -= hour * 3600;
-    int minute = second / 60;
-    second -= minute * 60;
+    fsecond *= 1000.0f;
+    int hour = second / 3600.0f;
+    second -= hour * 3600.0f;
+    int minute = second / 60.0f;
+    second -= minute * 60.0f;
     return (hour ? std::to_string(hour) : "00") + ":" + addzero(minute, 2) + ":" + addzero(second, 2) + "." +
            addzero((int)fsecond, 3) + "s";
 }
