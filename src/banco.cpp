@@ -20,13 +20,13 @@ TTF_Font *font = nullptr;
 int soco = 0;
 
 int board0[7][7] = {
-    {-1, -1, 0, 0, 0, -1, -1},
-    {-1, -1, 0, 0, 1, -1, -1},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 1, 1, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {-1, -1, 0, 0, 1, -1, -1},
-    {-1, -1, 0, 0, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    {1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 0, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
 };
 int board[7][7] = {
     //     {-1, -1, 1, 1, 1, -1, -1},
@@ -179,17 +179,17 @@ int LoseOrWin()
     return -1;
 }
 
-void DisplayText(std::string text, int x, int y)
+void DisplayText(std::string text, int x, int y, int fs)
 {
-    TTF_SetFontSize(font, 30);
+    TTF_SetFontSize(font, fs);
     SDL_Surface *sf = TTF_RenderUTF8_Blended(font, text.c_str(), {255, 255, 255, 255});
 
     SDL_Texture *texture = SDL_CreateTextureFromSurface(gRenderer, sf);
 
     SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
     TTF_SizeUTF8(font, text.c_str(), &rect.w, &rect.h);
+    rect.x = x - rect.w / 2;
+    rect.y = y - rect.h / 2;
 
     SDL_SetRenderDrawColor(gRenderer, 25, 25, 25, 128);
     SDL_RenderFillRect(gRenderer, &rect);
@@ -216,5 +216,5 @@ std::string timeformat(int ms)
     int minute = second / 60;
     second -= minute * 60;
     return (hour ? std::to_string(hour) : "00") + ":" + addzero(minute, 2) + ":" + addzero(second, 2) + "." +
-           addzero((int)fsecond, 3);
+           addzero((int)fsecond, 3) + "s";
 }

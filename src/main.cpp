@@ -50,7 +50,6 @@ int main(int argc, char *args[])
 
     TTF_Init();
     font = TTF_OpenFont("Roboto-Bold.ttf", 24);
-    cout << font;
 
     bg_music = Mix_LoadMUS("sound/music.ogg");
     Mix_VolumeMusic(32);
@@ -87,6 +86,7 @@ int main(int argc, char *args[])
     int state = 0;
     int delay_win = -2000;
     int time = 0;
+    int win_time = 0;
     while (!quit)
     {
         while (SDL_PollEvent(&e) != 0)
@@ -153,6 +153,7 @@ int main(int argc, char *args[])
                                     if (state == 1)
                                     {
                                         Mix_PlayChannel(-1, win, 0);
+                                        win_time = SDL_GetTicks() - time;
                                     }
                                     else
                                     {
@@ -194,6 +195,8 @@ int main(int argc, char *args[])
             SDL_RenderFillRect(gRenderer, nullptr);
             if (state != 0)
             {
+                DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3.5, 80);
+                DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2.5, 50);
                 SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
             }
             else
@@ -204,8 +207,8 @@ int main(int argc, char *args[])
         }
         else
         {
-            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), 15, 15);
-            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH - 150, 15);
+            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), SCREEN_WIDTH / 5, SCREEN_HEIGHT / 20, 30);
+            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH / 5 * 4.5, SCREEN_HEIGHT / 20, 30);
             if (cur_row != prev_row || cur_col != prev_col)
             {
                 if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col))
