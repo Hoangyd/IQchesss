@@ -4,6 +4,7 @@
 #include "../include/SDL2/SDL.h"
 #include "../include/SDL2/SDL_image.h"
 #include "../include/SDL2/SDL_mixer.h"
+#include "../include/SDL2/SDL_ttf.h"
 #include <iostream>
 #include <cmath>
 
@@ -31,10 +32,16 @@ SDL_Texture *loadTexture(const std::string &path);
 void drawChess();
 void drawBoard();
 void resetChess();
+void DisplayText(std::string text, int x, int y);
+std::string timeformat(int ms);
 
 extern Mix_Music *bg_music;
 extern Mix_Chunk *camco;
 extern Mix_Chunk *datco;
+extern Mix_Chunk *win;
+extern Mix_Chunk *lose;
+
+extern TTF_Font *font;
 
 class chess
 {

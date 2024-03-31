@@ -2,6 +2,7 @@
 #include "../include/SDL2/SDL.h"
 #include "../include/SDL2/SDL_image.h"
 #include "../include/SDL2/SDL_mixer.h"
+#include "../include/SDL2/SDL_ttf.h"
 #include <iostream>
 
 using namespace std;
@@ -25,6 +26,7 @@ int main(int argc, char *args[])
         std::cerr << "Không thể tạo renderer! Lỗi SDL: " << SDL_GetError() << std::endl;
         return 1;
     }
+    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
     int format = MIX_INIT_OGG;
     if (Mix_Init(format) & format != format)
     {
@@ -46,11 +48,17 @@ int main(int argc, char *args[])
     againbtn = loadTexture("image/againbutton.png");
     SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 
+    TTF_Init();
+    font = TTF_OpenFont("Roboto-Bold.ttf", 24);
+    cout << font;
+
     bg_music = Mix_LoadMUS("sound/music.ogg");
     Mix_VolumeMusic(32);
 
     camco = Mix_LoadWAV("sound/cam.ogg");
     datco = Mix_LoadWAV("sound/dat.ogg");
+    win = Mix_LoadWAV("sound/win.ogg");
+    lose = Mix_LoadWAV("sound/lose.ogg");
 
     resetChess();
 
@@ -78,6 +86,7 @@ int main(int argc, char *args[])
 
     int state = 0;
     int delay_win = -2000;
+    int time = 0;
     while (!quit)
     {
         while (SDL_PollEvent(&e) != 0)
@@ -141,6 +150,14 @@ int main(int argc, char *args[])
                                 {
                                     delay_win = SDL_GetTicks();
                                     play = false;
+                                    if (state == 1)
+                                    {
+                                        Mix_PlayChannel(-1, win, 0);
+                                    }
+                                    else
+                                    {
+                                        Mix_PlayChannel(-1, lose, 0);
+                                    }
                                 }
                             }
                         }
@@ -153,7 +170,10 @@ int main(int argc, char *args[])
                             state = 0;
                             play = true;
                             if (!Mix_PlayingMusic())
+                            {
                                 Mix_PlayMusic(bg_music, -1);
+                            }
+                            time = SDL_GetTicks();
                         }
                         if (isInRange(mouse_x, exitdst.x, exitdst.x + exitdst.h) && isInRange(mouse_y, exitdst.y, exitdst.y + exitdst.h))
                         {
@@ -184,6 +204,8 @@ int main(int argc, char *args[])
         }
         else
         {
+            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), 15, 15);
+            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH - 150, 15);
             if (cur_row != prev_row || cur_col != prev_col)
             {
                 if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col))
@@ -229,10 +251,12 @@ int main(int argc, char *args[])
     Mix_FreeMusic(bg_music);
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
+    TTF_CloseFont(font);
     gWindow = nullptr;
     gRenderer = nullptr;
     Mix_CloseAudio();
     Mix_Quit();
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }

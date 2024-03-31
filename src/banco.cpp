@@ -1,8 +1,8 @@
 
 #include "banco.h"
 
-const int SCREEN_WIDTH = 700;
-const int SCREEN_HEIGHT = 700;
+const int SCREEN_WIDTH = 900;
+const int SCREEN_HEIGHT = 900;
 const int SQUARE_SIZE = SCREEN_WIDTH / 10.588;
 SDL_Window *gWindow = nullptr;
 SDL_Renderer *gRenderer = nullptr;
@@ -14,6 +14,9 @@ SDL_Texture *againbtn = nullptr;
 Mix_Music *bg_music = nullptr;
 Mix_Chunk *camco = nullptr;
 Mix_Chunk *datco = nullptr;
+Mix_Chunk *win = nullptr;
+Mix_Chunk *lose = nullptr;
+TTF_Font *font = nullptr;
 int soco = 0;
 
 int board0[7][7] = {
@@ -174,4 +177,44 @@ int LoseOrWin()
     }
 
     return -1;
+}
+
+void DisplayText(std::string text, int x, int y)
+{
+    TTF_SetFontSize(font, 30);
+    SDL_Surface *sf = TTF_RenderUTF8_Blended(font, text.c_str(), {255, 255, 255, 255});
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(gRenderer, sf);
+
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    TTF_SizeUTF8(font, text.c_str(), &rect.w, &rect.h);
+
+    SDL_SetRenderDrawColor(gRenderer, 25, 25, 25, 128);
+    SDL_RenderFillRect(gRenderer, &rect);
+    SDL_RenderCopy(gRenderer, texture, NULL, &rect);
+
+    SDL_FreeSurface(sf);
+    SDL_DestroyTexture(texture);
+}
+
+std::string addzero(int n, int len)
+{
+    std::string strn = std::to_string(n);
+    return std::string(len - strn.size(), '0') + strn;
+}
+
+std::string timeformat(int ms)
+{
+    float fsecond = (float)ms / 1000.0;
+    int second = fsecond;
+    fsecond -= (float)second;
+    fsecond *= 1000;
+    int hour = second / 3600;
+    second -= hour * 3600;
+    int minute = second / 60;
+    second -= minute * 60;
+    return (hour ? std::to_string(hour) : "00") + ":" + addzero(minute, 2) + ":" + addzero(second, 2) + "." +
+           addzero((int)fsecond, 3);
 }
