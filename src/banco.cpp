@@ -180,10 +180,10 @@ int LoseOrWin()
     return -1;
 }
 
-void DisplayText(std::string text, int x, int y, int fs)
+void DisplayText(std::string text, int x, int y, int fs, int wrap)
 {
     TTF_SetFontSize(font, fs);
-    SDL_Surface *sf = TTF_RenderUTF8_Blended(font, text.c_str(), {255, 255, 255, 255});
+    SDL_Surface *sf = TTF_RenderUTF8_Blended_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrap);
 
     SDL_Texture *texture = SDL_CreateTextureFromSurface(gRenderer, sf);
 

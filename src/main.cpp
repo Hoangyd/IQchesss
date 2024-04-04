@@ -75,13 +75,18 @@ int main(int argc, char *args[])
 
     SDL_Rect playdst;
     playdst.w = playdst.h = SCREEN_HEIGHT / 9.0f;
-    playdst.x = SCREEN_WIDTH / 2.0f - playdst.w * 1.15f;
-    playdst.y = SCREEN_HEIGHT / 2.0f - playdst.h / 2.0f;
+    playdst.x = SCREEN_WIDTH / 2.0f - playdst.w * 0.5f;
+    playdst.y = SCREEN_HEIGHT / 2.0f - playdst.h * 0.5f;
+
+    SDL_Rect infodst;
+    infodst.w = infodst.h = SCREEN_HEIGHT / 9.0f;
+    infodst.x = SCREEN_WIDTH / 2.0f - infodst.w * 1.75f;
+    infodst.y = SCREEN_HEIGHT / 2.0f - infodst.h * 0.5f;
 
     SDL_Rect exitdst;
     exitdst.w = exitdst.h = SCREEN_HEIGHT / 9.0f;
-    exitdst.x = SCREEN_WIDTH / 2.0f + exitdst.w * 0.15f;
-    exitdst.y = SCREEN_HEIGHT / 2.0f - exitdst.h / 2.0f;
+    exitdst.x = SCREEN_WIDTH / 2.0f + exitdst.w * 0.75f;
+    exitdst.y = SCREEN_HEIGHT / 2.0f - exitdst.h * 0.5f;
 
     int state = 0;
     int delay_win = -2000;
@@ -195,8 +200,8 @@ int main(int argc, char *args[])
             SDL_RenderFillRect(gRenderer, nullptr);
             if (state != 0)
             {
-                DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f);
-                DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.5f, SCREEN_WIDTH / 18.0f);
+                DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f, SCREEN_WIDTH);
+                DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.5f, SCREEN_WIDTH / 18.0f, SCREEN_WIDTH);
                 SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
             }
             else
@@ -207,8 +212,8 @@ int main(int argc, char *args[])
         }
         else
         {
-            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), SCREEN_WIDTH / 5.0f, SCREEN_HEIGHT / 20.0f, SCREEN_WIDTH / 30.0f);
-            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH / 5.0f * 4.5f, SCREEN_HEIGHT / 20.0f, SCREEN_WIDTH / 30.0f);
+            DisplayText("Thời gian: " + timeformat(SDL_GetTicks() - time), SCREEN_WIDTH / 5.0f, SCREEN_HEIGHT / 20.0f, SCREEN_WIDTH / 30.0f, SCREEN_WIDTH);
+            DisplayText("Số cờ: " + to_string(soco), SCREEN_WIDTH / 5.0f * 4.5f, SCREEN_HEIGHT / 20.0f, SCREEN_WIDTH / 30.0f, SCREEN_WIDTH);
             if (cur_row != prev_row || cur_col != prev_col)
             {
                 if (isAPiece(prev_row, prev_col) && (prev_row != selected_row || prev_col != selected_col))

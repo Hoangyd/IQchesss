@@ -32,7 +32,7 @@ SDL_Texture *loadTexture(const std::string &path);
 void drawChess();
 void drawBoard();
 void resetChess();
-void DisplayText(std::string text, int x, int y, int fs);
+void DisplayText(std::string text, int x, int y, int fs, int wrap);
 std::string timeformat(int ms);
 
 extern Mix_Music *bg_music;
