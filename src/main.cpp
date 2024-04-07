@@ -238,6 +238,7 @@ int main(int argc, char *args[])
                 }
                 else
                 {
+                    DisplayText("IQCHESS", SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.0f, SCREEN_HEIGHT / 45.0f * 5.0f, SCREEN_WIDTH);
                     SDL_RenderCopy(gRenderer, playbtn, nullptr, &playdst);
                 }
                 SDL_RenderCopy(gRenderer, infobtn, nullptr, &infodst);
