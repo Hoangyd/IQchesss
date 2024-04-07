@@ -20,7 +20,10 @@ extern SDL_Texture *quanco[3];
 extern SDL_Texture *playbtn;
 extern SDL_Texture *exitbtn;
 extern SDL_Texture *againbtn;
+extern SDL_Texture *infobtn;
 extern int soco;
+
+extern string luatchoi;
 
 int LoseOrWin();
 bool isInRange(int value, int mn, int mx);

@@ -46,6 +46,7 @@ int main(int argc, char *args[])
     playbtn = loadTexture("image/playbutton.png");
     exitbtn = loadTexture("image/exitbutton.png");
     againbtn = loadTexture("image/againbutton.png");
+    infobtn = loadTexture("image/infobtn.png");
     SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 
     TTF_Init();
@@ -73,20 +74,26 @@ int main(int argc, char *args[])
     int selected_row = -1, selected_col = -1;
     chess *selected = nullptr;
 
-    SDL_Rect playdst;
-    playdst.w = playdst.h = SCREEN_HEIGHT / 9.0f;
-    playdst.x = SCREEN_WIDTH / 2.0f - playdst.w * 0.5f;
-    playdst.y = SCREEN_HEIGHT / 2.0f - playdst.h * 0.5f;
-
     SDL_Rect infodst;
     infodst.w = infodst.h = SCREEN_HEIGHT / 9.0f;
-    infodst.x = SCREEN_WIDTH / 2.0f - infodst.w * 1.75f;
+    infodst.x = SCREEN_WIDTH / 2.0f - infodst.w * 0.5f;
     infodst.y = SCREEN_HEIGHT / 2.0f - infodst.h * 0.5f;
+    bool showinfo = false;
+
+    SDL_Rect playdst;
+    playdst.w = playdst.h = SCREEN_HEIGHT / 9.0f;
+    playdst.x = SCREEN_WIDTH / 2.0f - playdst.w * 1.75f;
+    playdst.y = SCREEN_HEIGHT / 2.0f - playdst.h * 0.5f;
 
     SDL_Rect exitdst;
     exitdst.w = exitdst.h = SCREEN_HEIGHT / 9.0f;
     exitdst.x = SCREEN_WIDTH / 2.0f + exitdst.w * 0.75f;
     exitdst.y = SCREEN_HEIGHT / 2.0f - exitdst.h * 0.5f;
+
+    SDL_Rect replaydist;
+    replaydist.w = replaydist.h = SCREEN_HEIGHT / 10.0f;
+    replaydist.x = SCREEN_WIDTH * 0.98f - replaydist.w;
+    replaydist.y = SCREEN_WIDTH * 0.98f - replaydist.h;
 
     int state = 0;
     int delay_win = -2000;
@@ -123,25 +130,25 @@ int main(int argc, char *args[])
                         {
                             if (!isEmpty(cur_row, cur_col))
                                 continue;
-                            bool a = (cur_row == selected_row && cur_col == selected_col);
-                            bool b = false;
-                            if (!a)
+                            bool k_di_chuyen = (cur_row == selected_row && cur_col == selected_col);
+                            bool an_co = false;
+                            if (!k_di_chuyen)
                             {
-                                bool r = abs(cur_row - selected_row) == 2;
-                                bool c = abs(cur_col - selected_col) == 2;
+                                int dr = abs(cur_row - selected_row);
+                                int dc = abs(cur_col - selected_col);
                                 int mid_row = (cur_row + selected_row) / 2;
                                 int mid_col = (cur_col + selected_col) / 2;
                                 bool ok = board[mid_row][mid_col] == 1 && cs[mid_row][mid_col];
-                                if ((r || c) && ok)
+                                if (((dr == 2 && dc == 0) || (dr == 0 && dc == 2)) && ok)
                                 {
                                     board[mid_row][mid_col] = 0;
                                     delete cs[mid_row][mid_col];
                                     cs[mid_row][mid_col] = nullptr;
-                                    b = true;
+                                    an_co = true;
                                     soco--;
                                 }
                             }
-                            if (a || b)
+                            if (k_di_chuyen || an_co)
                             {
                                 cs[cur_row][cur_col] = selected;
                                 cs[cur_row][cur_col]->currentTexture = 1;
@@ -170,20 +177,39 @@ int main(int argc, char *args[])
                     }
                     if (!play && SDL_GetTicks() - delay_win >= 500)
                     {
-                        if (isInRange(mouse_x, playdst.x, playdst.x + playdst.h) && isInRange(mouse_y, playdst.y, playdst.y + playdst.h))
+                        if (!showinfo)
                         {
-                            resetChess();
-                            state = 0;
-                            play = true;
-                            if (!Mix_PlayingMusic())
+                            if (isInRange(mouse_x, playdst.x, playdst.x + playdst.h) && isInRange(mouse_y, playdst.y, playdst.y + playdst.h))
                             {
-                                Mix_PlayMusic(bg_music, -1);
+                                resetChess();
+                                state = 0;
+                                play = true;
+                                if (!Mix_PlayingMusic())
+                                {
+                                    Mix_PlayMusic(bg_music, -1);
+                                }
+                                time = SDL_GetTicks();
                             }
-                            time = SDL_GetTicks();
+                            else if (isInRange(mouse_x, exitdst.x, exitdst.x + exitdst.h) && isInRange(mouse_y, exitdst.y, exitdst.y + exitdst.h))
+                            {
+                                quit = true;
+                            }
+                            else if (isInRange(mouse_x, infodst.x, infodst.x + infodst.h) && isInRange(mouse_y, infodst.y, infodst.y + infodst.h))
+                            {
+                                showinfo = true;
+                            }
                         }
-                        if (isInRange(mouse_x, exitdst.x, exitdst.x + exitdst.h) && isInRange(mouse_y, exitdst.y, exitdst.y + exitdst.h))
+                        else
                         {
-                            quit = true;
+                            showinfo = false;
+                        }
+                    }
+                    else if (play)
+                    {
+                        if (isInRange(mouse_x, replaydist.x, replaydist.x + replaydist.h) && isInRange(mouse_y, replaydist.y, replaydist.y + replaydist.h))
+                        {
+                            time = SDL_GetTicks();
+                            resetChess();
                         }
                     }
                 }
@@ -198,17 +224,25 @@ int main(int argc, char *args[])
         {
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 127);
             SDL_RenderFillRect(gRenderer, nullptr);
-            if (state != 0)
+            if (showinfo)
             {
-                DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f, SCREEN_WIDTH);
-                DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.5f, SCREEN_WIDTH / 18.0f, SCREEN_WIDTH);
-                SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
+                DisplayText(luatchoi, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_HEIGHT / 25.0f, SCREEN_WIDTH / 1.25);
             }
             else
             {
-                SDL_RenderCopy(gRenderer, playbtn, nullptr, &playdst);
+                if (state != 0)
+                {
+                    DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f, SCREEN_WIDTH);
+                    DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.5f, SCREEN_WIDTH / 18.0f, SCREEN_WIDTH);
+                    SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
+                }
+                else
+                {
+                    SDL_RenderCopy(gRenderer, playbtn, nullptr, &playdst);
+                }
+                SDL_RenderCopy(gRenderer, infobtn, nullptr, &infodst);
+                SDL_RenderCopy(gRenderer, exitbtn, nullptr, &exitdst);
             }
-            SDL_RenderCopy(gRenderer, exitbtn, nullptr, &exitdst);
         }
         else
         {
@@ -238,6 +272,8 @@ int main(int argc, char *args[])
                 dest.y = mouse_y - dest.h / 2.0f;
                 SDL_RenderCopy(gRenderer, quanco[0], nullptr, &dest);
             }
+
+            SDL_RenderCopy(gRenderer, againbtn, NULL, &replaydist);
         }
 
         SDL_RenderPresent(gRenderer);
