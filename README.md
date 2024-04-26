@@ -41,6 +41,10 @@ Em đã lên ý tưởng cho game của mình sẽ là một trò chơi cờ tư
 
 Dựa trên ý tưởng đó em đã có những dòng code đầu tiên cho con game của mình, dần dần bàn cờ, quân cờ, luật chơi và các tính năng khác dần được hình thành.
 
+## Hướng dẫn cài đặt
+
+Download file nén của game tại [đây](https://github.com/Hoangyd/IQchesss/releases/download/v1/IQchesss.zip), giải nén file `IQchesss.zip` và chạy file `main.exe` để chơi game.
+
 ## Các chức năng
 
 ### Màn hình chính
