@@ -94,7 +94,7 @@ Với màu sắc, độ sắc nét tinh sảo và hoàn mĩ của hình ảnh b�
 Game được viết gồm 3 file là *banco.h*, *banco.cpp* và *main.cpp*. Trong đó, *banco.h* và *banco.cpp* để khởi tạo và định nghĩa các hàm biến phục vụ cho vòng lặp của game trong *main.cpp*.  
 
 Các ô trên bàn cờ được đánh các số -1, 0, 1, phục vụ cho việc vẽ quân cờ và thực hiện logic của game.
-****
+
 * `-1`: Ô không có cờ, không được đặt cờ.
 * `0`: Ô không có cờ, được đặt cờ.
 * `1`: Ô có cờ, được đặt cờ.
