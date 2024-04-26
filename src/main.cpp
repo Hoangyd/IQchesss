@@ -54,7 +54,6 @@ int main(int argc, char *args[])
 
     bg_music = Mix_LoadMUS("sound/music.ogg");
     Mix_VolumeMusic(32);
-
     camco = Mix_LoadWAV("sound/cam.ogg");
     datco = Mix_LoadWAV("sound/dat.ogg");
     win = Mix_LoadWAV("sound/win.ogg");
@@ -118,7 +117,7 @@ int main(int argc, char *args[])
                     {
                         if (selected == nullptr && isAPiece(cur_row, cur_col))
                         {
-                            cs[cur_row][cur_col]->currentTexture = 2;
+
                             selected_row = cur_row;
                             selected_col = cur_col;
                             selected = cs[cur_row][cur_col];
@@ -160,10 +159,10 @@ int main(int argc, char *args[])
                                     state = LoseOrWin();
                                 if (state != 0)
                                 {
-                                    delay_win = SDL_GetTicks();
                                     play = false;
                                     if (state == 1)
                                     {
+                                        delay_win = SDL_GetTicks();
                                         Mix_PlayChannel(-1, win, 0);
                                         win_time = SDL_GetTicks() - time;
                                     }
@@ -232,7 +231,7 @@ int main(int argc, char *args[])
             {
                 if (state != 0)
                 {
-                    DisplayText((state == 1 ? "Bạn đã chiến thắng!" : "Bạn đã thua!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f, SCREEN_WIDTH);
+                    DisplayText((state == 1 ? "HẢO HÁN!" : "Ối dồi ôi!"), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 3.5f, SCREEN_HEIGHT / 45.0f * 4.0f, SCREEN_WIDTH);
                     DisplayText((state == 1 ? "Trong: " + timeformat(win_time) : "Số cờ còn lại: " + to_string(soco)), SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.5f, SCREEN_WIDTH / 18.0f, SCREEN_WIDTH);
                     SDL_RenderCopy(gRenderer, againbtn, nullptr, &playdst);
                 }

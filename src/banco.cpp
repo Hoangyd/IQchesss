@@ -20,9 +20,9 @@ Mix_Chunk *lose = nullptr;
 TTF_Font *font = nullptr;
 int soco = 0;
 
-string luatchoi = "Luật chơi của trò IQ Chess thực sự rất đơn giản. Mỗi lần di chuyển, một quân cờ chỉ được coi là di chuyển hợp lệ nếu và chỉ nếu vị trí mà quân cờ muốn tới không có quân cờ nào khác, ô muốn tới và ô ban đầu cùng nằm trên một đường thẳng, và chỉ cách nhau đúng một ô. Điều quan trọng là giữa vị trí ban đầu và vị trí mà quân cờ muốn tới phải tồn tại ít nhất một quân cờ khác. Bạn sẽ chiến thắng cuộc thử thách nếu như chỉ còn lại một quân cờ trên bàn cờ và quân cờ đó nằm chính giữa bàn cờ. Tất cả những trường hợp khác, nếu bạn không còn nước đi hợp lệ nào nữa, bạn sẽ được coi là thua cuộc.";
+string luatchoi = "Luật chơi của trò IQ Chess thực sự rất đơn giản. Mỗi lần di chuyển, một quân cờ chỉ được coi là di chuyển hợp lệ nếu vị trí mà quân cờ muốn tới không có quân cờ nào, ô muốn tới và ô ban đầu cùng nằm trên một đường thẳng, và chỉ cách nhau đúng một ô. Điều quan trọng là giữa vị trí ban đầu và vị trí mà quân cờ muốn tới phải tồn tại một quân cờ. Bạn sẽ chiến thắng thử thách nếu như chỉ còn lại một quân cờ trên bàn cờ và quân cờ đó nằm chính giữa bàn cờ. Tất cả những trường hợp khác, nếu bạn không còn nước đi hợp lệ nào nữa, bạn sẽ được coi là thua cuộc.";
 
-int board0[7][7] = {
+int board[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},
     {-1, -1, 1, 1, 1, -1, -1},
     {1, 1, 1, 1, 1, 1, 1},
@@ -32,14 +32,14 @@ int board0[7][7] = {
     {-1, -1, 1, 1, 1, -1, -1},
 };
 
-int board[7][7] = {
-    {-1, -1, 0, 0, 0, -1, -1},
-    {-1, -1, 0, 0, 1, -1, -1},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 1, 1, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {-1, -1, 0, 0, 1, -1, -1},
-    {-1, -1, 0, 0, 1, -1, -1},
+int board0[7][7] = {
+    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    {1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 0, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1},
+    {-1, -1, 1, 1, 1, -1, -1},
+    {-1, -1, 1, 1, 1, -1, -1},
 };
 
 chess *cs[7][7];
@@ -125,7 +125,7 @@ bool isAPiece(int row, int col)
 
 bool isEmpty(int row, int col)
 {
-    return isInRange(row, 0, 7) && isInRange(col, 0, 7) && board[row][col] == 0 && !cs[row][col];
+    return isInRange(row, 0, 7) && isInRange(col, 0, 7) && (board[row][col] == 0 && !cs[row][col]);
 }
 
 void print(int row, int col)
@@ -155,6 +155,7 @@ int LoseOrWin()
             {
                 continue;
             }
+
             bool u = isAPiece(row - 1, col) && isEmpty(row - 2, col);
             bool d = isAPiece(row + 1, col) && isEmpty(row + 2, col);
             bool r = isAPiece(row, col + 1) && isEmpty(row, col + 2);
